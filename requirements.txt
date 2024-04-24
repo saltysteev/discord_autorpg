@@ -1,0 +1,4 @@
+discord.py
+aiomysql
+ormar
+uvloop
