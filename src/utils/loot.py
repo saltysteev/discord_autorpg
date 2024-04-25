@@ -318,8 +318,8 @@ async def get_item(player: Player):
     item = await generate_item(slot.value)
     replaced_item: bool = False
 
-    if item["dps"] > player.slot.name["dps"]:
-        await player.update(weapon=item, _columns=["weapon"])
+    if item["dps"] > getattr(player, slot.name)["DPS"]:
+        await player.update(_columns=[slot.name])
         replaced_item = True
 
-    return item, slot, replaced_item
+    return item, slot.name, replaced_item
