@@ -319,6 +319,7 @@ async def get_item(player: Player):
     replaced_item: bool = False
 
     if item["dps"] > getattr(player, slot.name)["DPS"]:
+        getattr(player, slot.name)["DPS"] = item["dps"]
         await player.update(_columns=[slot.name])
         replaced_item = True
 
