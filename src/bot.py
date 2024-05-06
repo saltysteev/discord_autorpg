@@ -47,10 +47,6 @@ class AutoBot(commands.Bot):
 
         # configuration
         self.initial_ext = initial_ext
-        self.game_channel = cfg.GAME_CHANNEL if not cfg.DEBUG else cfg.DEBUG_CHANNEL
-        self.talk_channel = cfg.TALK_CHANNEL if not cfg.DEBUG else cfg.DEBUG_CHANNEL
-        self.raid_channel = cfg.RAID_CHANNEL if not cfg.DEBUG else cfg.DEBUG_CHANNEL
-        self.guild = cfg.GUILD_ID if not cfg.DEBUG else cfg.DEBUG_GID
         self.pcount = 0
 
     async def setup_hook(self) -> None:
@@ -69,10 +65,13 @@ class AutoBot(commands.Bot):
 
     async def on_ready(self):
         """Once setup_hook has finished and bot is ready"""
-        self.game_channel = self.get_channel(self.game_channel)
-        self.talk_channel = self.get_channel(self.talk_channel)
-        self.raid_channel = self.get_channel(self.raid_channel)
-        self.guild = self.get_guild(self.guild)
+        self.game_channel = self.get_channel(
+            cfg.GAME_CHANNEL if not cfg.DEBUG else cfg.DEBUG_CHANNEL
+        )
+        self.talk_channel = self.get_channel(
+            cfg.TALK_CHANNEL if not cfg.DEBUG else cfg.DEBUG_CHANNEL
+        )
+        self.guild = self.get_guild(cfg.GUILD_ID if not cfg.DEBUG else cfg.DEBUG_GID)
         self.pcount = await Player.objects.filter(online=True).count()
         logging.info("Game started with %s online players", self.pcount)
 
@@ -168,7 +167,7 @@ class AutoBot(commands.Bot):
 
 async def main():
     """Main bot launch function"""
-    cfgpath = Path('./utils/config.py')
+    cfgpath = Path("./utils/config.py")
     if not cfgpath.is_file():
         return "Config file missing or not changed!"
 
