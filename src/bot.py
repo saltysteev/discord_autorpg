@@ -167,9 +167,8 @@ class AutoBot(commands.Bot):
 
 async def main():
     """Main bot launch function"""
-    cfgpath = Path("./utils/config.py")
-    if not cfgpath.is_file():
-        return "Config file missing or not changed!"
+    if not Path("src/utils/config.py").exists():
+        return print("Config file missing or not changed!")
 
     token = cfg.DISCORD_TOKEN if not cfg.DEBUG else cfg.DEBUG_TOKEN
     discord.utils.setup_logging(level=logging.INFO, root=True)

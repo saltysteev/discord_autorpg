@@ -9,7 +9,7 @@ import databases
 import ormar
 import sqlalchemy
 
-from utils.config import DEBUG
+from utils.config import DEBUG, DBTYPE, DBUSER, DBPASS, DBHOST, DBPORT, DBNAME
 
 DBSTRING = f"{DBTYPE}://{DBUSER}:{DBPASS}@{DBHOST}:{DBPORT}/{DBNAME}"
 
