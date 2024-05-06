@@ -65,13 +65,9 @@ class AutoBot(commands.Bot):
 
     async def on_ready(self):
         """Once setup_hook has finished and bot is ready"""
-        self.game_channel = self.get_channel(
-            cfg.GAME_CHANNEL if not cfg.DEBUG else cfg.DEBUG_CHANNEL
-        )
-        self.talk_channel = self.get_channel(
-            cfg.TALK_CHANNEL if not cfg.DEBUG else cfg.DEBUG_CHANNEL
-        )
-        self.guild = self.get_guild(cfg.GUILD_ID if not cfg.DEBUG else cfg.DEBUG_GID)
+        self.game_channel = self.get_channel(cfg.GAME_CHANNEL)
+        self.talk_channel = self.get_channel(cfg.TALK_CHANNEL)
+        self.guild = self.get_guild(cfg.GUILD_ID)
         self.pcount = await Player.objects.filter(online=True).count()
         logging.info("Game started with %s online players", self.pcount)
 
@@ -96,15 +92,15 @@ class AutoBot(commands.Bot):
         return ", ".join(result)
 
     def item_string(self, item) -> str:
-        if self.guild is not None:
-            item_role: discord.Role = discord.utils.get(
-                self.guild.roles, name=item["rank"]
-            )
-            return (
-                f"<@&{item_role.id}> {item["quality"]} {item["prefix"]}{item["name"]}{item["suffix"]} ({item["condition"]}) ({item["dps"]})"
-                if not item["flair"]
-                else f"<@&{item_role.id}> {item["quality"]} {item["prefix"]}{item["name"]}{item["suffix"]} ({item["condition"]}) ({item["dps"]})\n> *{item["flair"]}*"
-            )
+        if self.guild is None:
+            pass
+
+        item_role = discord.utils.get(self.guild.roles, name=item["rank"])
+        return (
+            f"<@&{item_role.id}> {item["quality"]} {item["prefix"]}{item["name"]}{item["suffix"]} ({item["condition"]}) ({item["dps"]})"
+            if not item["flair"]
+            else f"<@&{item_role.id}> {item["quality"]} {item["prefix"]}{item["name"]}{item["suffix"]} ({item["condition"]}) ({item["dps"]})\n> *{item["flair"]}*"
+        )
 
     @staticmethod
     async def createroles(g: discord.Guild) -> None:
@@ -170,7 +166,7 @@ async def main():
     if not Path("src/utils/config.py").exists():
         return print("Config file missing or not changed!")
 
-    token = cfg.DISCORD_TOKEN if not cfg.DEBUG else cfg.DEBUG_TOKEN
+    token: str = cfg.DISCORD_TOKEN
     discord.utils.setup_logging(level=logging.INFO, root=True)
     exts = [
         "cogs.admincomms",

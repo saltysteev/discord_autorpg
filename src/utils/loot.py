@@ -5,8 +5,9 @@ loot.py
 import math
 import random
 from enum import Enum
+import typing
+from dataclasses import dataclass
 
-from utils.config import WEAPON_SLOTS
 from utils.db import Player
 
 conditions = [
@@ -247,19 +248,25 @@ class Slots(Enum):
     shield = shields
     helmet = helmets
     chest = chests
-    glove = gloves
-    boot = boots
+    gloves = gloves
+    boots = boots
     ring = rings
     amulet = amulets
 
 
-async def weighted_choice(items):
+async def weighted_choice(items: list) -> dict:
     """Choose items based on weight"""
+    # def weight(arr):
+    #     return [item for obj in arr for item in [obj] * int(obj["weight"] * 100)]
 
-    def weight(arr):
-        return [item for obj in arr for item in [obj] * int(obj["weight"] * 100)]
+    names = [item['name'] for item in items]
+    weights = [item['weight'] for item in items]
+    chosenName = random.choices(names, weights)[0]
 
-    return random.choice(weight(items))
+    for item in items:
+        if item['name'] == chosenName:
+            return item
+    return {}
 
 
 async def get_item(player: Player):
