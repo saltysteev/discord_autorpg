@@ -10,11 +10,13 @@ from discord.ext import commands
 from utils import config as cfg
 from utils.db import Player
 
+from bot import AutoBot
+
 
 class Maps(commands.Cog):
     """Handler of maps"""
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: AutoBot):
         super().__init__()
         self.bot = bot
         self.previous_bump = []
@@ -47,7 +49,8 @@ class Maps(commands.Cog):
                 pings.append(f"<@!{player.uid}>")
             if opp.optin:
                 pings.append(f"<@!{opp.uid}>")
-            await self.bot.game_channel.send(" ".join(pings), embed=embed)
+            if self.bot.guild.system_channel:
+                await self.bot.guild.system_channel.send(" ".join(pings), embed=embed)
 
 
 async def setup(bot):
