@@ -28,7 +28,7 @@ SOFTWARE.
 import logging
 import logging.handlers
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 import discord
 import uvloop
@@ -65,9 +65,9 @@ class AutoBot(commands.Bot):
 
     async def on_ready(self):
         """Once setup_hook has finished and bot is ready"""
-        self.game_channel = self.get_channel(cfg.GAME_CHANNEL)
-        self.talk_channel = self.get_channel(cfg.TALK_CHANNEL)
-        self.guild = self.get_guild(cfg.GUILD_ID)
+        self.game_channel = await self.fetch_channel(cfg.GAME_CHANNEL)
+        self.talk_channel = await self.fetch_channel(cfg.TALK_CHANNEL)
+        self.guild = await self.fetch_guild(cfg.GUILD_ID)
         self.pcount = await Player.objects.filter(online=True).count()
         logging.info("Game started with %s online players", self.pcount)
 
@@ -91,16 +91,17 @@ class AutoBot(commands.Bot):
                 result.append(f"{value} {name}")
         return ", ".join(result)
 
-    def item_string(self, item) -> str:
+    def item_string(self, item) -> Optional[str]:
         if self.guild is None:
-            pass
+            return
 
         item_role = discord.utils.get(self.guild.roles, name=item["rank"])
-        return (
-            f"<@&{item_role.id}> {item["quality"]} {item["prefix"]}{item["name"]}{item["suffix"]} ({item["condition"]}) ({item["dps"]})"
-            if not item["flair"]
-            else f"<@&{item_role.id}> {item["quality"]} {item["prefix"]}{item["name"]}{item["suffix"]} ({item["condition"]}) ({item["dps"]})\n> *{item["flair"]}*"
-        )
+        if item_role is not None:
+            return (
+                f"<@&{item_role.id}> {item["quality"]} {item["prefix"]}{item["name"]}{item["suffix"]} ({item["condition"]}) ({item["dps"]})"
+                if not item["flair"]
+                else f"<@&{item_role.id}> {item["quality"]} {item["prefix"]}{item["name"]}{item["suffix"]} ({item["condition"]}) ({item["dps"]})\n> *{item["flair"]}*"
+            )
 
     @staticmethod
     async def createroles(g: discord.Guild) -> None:

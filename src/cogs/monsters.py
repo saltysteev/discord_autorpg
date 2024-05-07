@@ -11,6 +11,8 @@ from discord.ext import commands
 from utils import config as cfg
 from utils.db import Player
 
+from bot import AutoBot
+
 utc = datetime.timezone.utc
 raidtime = datetime.time(hour=14, minute=0, tzinfo=utc)
 
@@ -44,7 +46,7 @@ monster_list = [
 class Monsters(commands.Cog):
     """Handler of monster combat"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: AutoBot):
         self.bot = bot
 
     async def encounter(self, player: Player):
@@ -99,9 +101,9 @@ class Monsters(commands.Cog):
                 f"They now reach the next level in **{self.bot.ctime(player.nextxp - player.currentxp)}**",
             )
         if player.optin:
-            await self.bot.game_channel.send(f"<@!{player.uid}>", embed=embed)
+            await self.bot.game_channel.send(f"<@!{player.uid}>", embed=embed) # type: ignore
         else:
-            await self.bot.game_channel.send(embed=embed)
+            await self.bot.game_channel.send(embed=embed) # type: ignore
 
 
 async def setup(bot):

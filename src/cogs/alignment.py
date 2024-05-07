@@ -8,10 +8,12 @@ from discord.ext import commands
 
 from utils.db import Player
 
+from bot import AutoBot
+
 
 class Align(discord.ui.View):
     def __init__(self):
-        self.choice = None
+        self.choice = 0
         super().__init__()
 
     @discord.ui.button(label="Good", style=discord.ButtonStyle.green)
@@ -38,7 +40,7 @@ class Align(discord.ui.View):
 class Alignment(commands.Cog):
     """Handler of alignment"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: AutoBot):
         super().__init__()
         self.bot = bot
 
@@ -67,7 +69,7 @@ class Alignment(commands.Cog):
         )
         if player.align != view.choice:
             player.align = view.choice
-            await player.update(_columns="alignment")
+            await player.update(_columns=["align"])
         await ctx.edit_original_response(content=response_string, view=None)
 
 

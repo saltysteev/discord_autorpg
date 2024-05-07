@@ -8,11 +8,13 @@ from discord.ext import commands
 
 from utils.db import Player
 
+from bot import AutoBot
+
 
 class Jobs(commands.Cog):
     """Handler of jobs"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: AutoBot):
         super().__init__()
         self.bot = bot
 

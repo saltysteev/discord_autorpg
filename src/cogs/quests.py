@@ -12,11 +12,13 @@ from discord.ext import commands
 from utils import config as cfg
 from utils.db import Player, Quest
 
+from bot import AutoBot
+
 
 class Quests(commands.Cog):
     """Handler of quests"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: AutoBot):
         super().__init__()
         self.bot = bot
 
@@ -59,8 +61,8 @@ class Quests(commands.Cog):
             name="",
             value=f"{self.return_questers(questers)} have been graciously chosen by the sentient Beings to {goal}.\nThey have **24 hours** to complete their journey which will take **{self.bot.ctime(endxp)}** collectively.",
         )
-        await self.bot.game_channel.send(embed=embed)
-        await self.bot.talk_channel.send(" ".join(quester_pings), embed=embed)
+        await self.bot.game_channel.send(embed=embed) # type: ignore
+        await self.bot.talk_channel.send(" ".join(quester_pings), embed=embed) # type: ignore
 
     async def endquest(self, quest: Quest, win):
         eligible = await Player.objects.all(online=True, level__gte=20)
@@ -91,8 +93,8 @@ class Quests(commands.Cog):
                 name="",
                 value="They are displeased, slowing everyone's clock **5% towards the next level!**",
             )
-        await self.bot.game_channel.send(embed=embed)
-        await self.bot.talk_channel.send(embed=embed)
+        await self.bot.game_channel.send(embed=embed) # type: ignore
+        await self.bot.talk_channel.send(embed=embed) # type: ignore
 
     @app_commands.command()
     async def quest(self, ctx: discord.Interaction):

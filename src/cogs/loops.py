@@ -12,22 +12,31 @@ from ormar.exceptions import NoMatch
 from utils import config as cfg
 from utils.db import Player, Quest
 
+from bot import AutoBot
+
 
 class Loops(commands.Cog):
     """Handler of main game loops"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: AutoBot):
         self.bot = bot
         self.main_loop.start()
         self.hints.start()
         self.quest_check.start()
+
+    async def cog_load(self):
+        self.map_cog = self.bot.get_cog("Maps")
+        self.event_cog = self.bot.get_cog("Events")
+        self.mon_cog = self.bot.get_cog("Monsters")
+        self.user_cog = self.bot.get_cog("User")
+        self.quest_cog = self.bot.get_cog("Quests")
 
     @tasks.loop(seconds=cfg.INTERVAL)
     async def main_loop(self):
         """Loop timer that runs game logic on all online players"""
         players = await Player.objects.all(online=True)
         for player in players:
-            await self.map_cog.mapmove(player)
+            await map_cog.mapmove(player)
             if player.currentxp >= player.nextxp:
                 await self.user_cog.levelup(player)
             player.lastlogin = int(datetime.datetime.today().timestamp())
@@ -53,16 +62,6 @@ class Loops(commands.Cog):
                 "y",
             ],
         )
-
-    @main_loop.before_loop
-    async def before_main_loop(self):
-        """Get cogs ready before background loop is started"""
-        await self.bot.wait_until_ready()
-        self.map_cog = self.bot.get_cog("Maps")
-        self.event_cog = self.bot.get_cog("Events")
-        self.mon_cog = self.bot.get_cog("Monsters")
-        self.user_cog = self.bot.get_cog("User")
-        self.quest_cog = self.bot.get_cog("Quests")
 
     @tasks.loop(minutes=cfg.INTERVAL)
     async def quest_check(self):
@@ -95,6 +94,11 @@ class Loops(commands.Cog):
         embed = discord.Embed(title="")
         embed.add_field(name=":bulb: Did you know?", value=random_hint)
         await self.bot.talk_channel.send(embed=embed)
+
+    @main_loop.before_loop
+    async def before_main_loop(self):
+        """Get cogs ready before background loop is started"""
+        await self.bot.wait_until_ready()
 
     @hints.before_loop
     async def before_hints(self):
