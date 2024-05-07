@@ -65,8 +65,6 @@ class AutoBot(commands.Bot):
 
     async def on_ready(self):
         """Once setup_hook has finished and bot is ready"""
-        self.game_channel = await self.fetch_channel(cfg.GAME_CHANNEL)
-        self.talk_channel = await self.fetch_channel(cfg.TALK_CHANNEL)
         self.guild = await self.fetch_guild(cfg.GUILD_ID)
         self.pcount = await Player.objects.filter(online=True).count()
         logging.info("Game started with %s online players", self.pcount)

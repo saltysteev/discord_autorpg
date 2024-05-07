@@ -79,9 +79,9 @@ class Events(commands.Cog):
         )
         em.set_footer(text=footer)
         if player.optin:
-            await self.bot.game_channel.send(f"<@!{player.uid}>", embed=em) # type: ignore
+            await self.bot.guild.system_channel.send(f"<@!{player.uid}>", embed=em) # type: ignore
         else:
-            await self.bot.game_channel.send(embed=em) # type: ignore
+            await self.bot.guild.system_channel.send(embed=em) # type: ignore
 
 
 async def setup(bot):

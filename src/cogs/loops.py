@@ -21,7 +21,6 @@ class Loops(commands.Cog):
     def __init__(self, bot: AutoBot):
         self.bot = bot
         self.main_loop.start()
-        self.hints.start()
         self.quest_check.start()
 
     async def cog_load(self):
@@ -36,7 +35,7 @@ class Loops(commands.Cog):
         """Loop timer that runs game logic on all online players"""
         players = await Player.objects.all(online=True)
         for player in players:
-            await map_cog.mapmove(player)
+            await self.map_cog.mapmove(player)
             if player.currentxp >= player.nextxp:
                 await self.user_cog.levelup(player)
             player.lastlogin = int(datetime.datetime.today().timestamp())
@@ -87,22 +86,9 @@ class Loops(commands.Cog):
                 ):  # Need at least 2 online players to start quest
                     await self.quest_cog.startquest()
 
-    @tasks.loop(hours=12)
-    async def hints(self):
-        """Loop timer that sends a tip to the channel"""
-        random_hint = random.choice(cfg.TIPS)
-        embed = discord.Embed(title="")
-        embed.add_field(name=":bulb: Did you know?", value=random_hint)
-        await self.bot.talk_channel.send(embed=embed)
-
     @main_loop.before_loop
     async def before_main_loop(self):
         """Get cogs ready before background loop is started"""
-        await self.bot.wait_until_ready()
-
-    @hints.before_loop
-    async def before_hints(self):
-        """Function to run before hint timer is started"""
         await self.bot.wait_until_ready()
 
 
