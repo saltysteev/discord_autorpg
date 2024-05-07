@@ -78,11 +78,11 @@ class Events(commands.Cog):
             else f"This {item[1]} is weaker, so they tossed it away."
         )
         em.set_footer(text=footer)
-        if self.bot.guild.system_channel:
+        if self.bot.channel:
             if player.optin:
-                await self.bot.guild.system_channel.send(f"<@!{player.uid}>", embed=em)
+                await self.bot.channel.send(f"<@!{player.uid}>", embed=em)
             else:
-                await self.bot.guild.system_channel.send(embed=em)
+                await self.bot.channel.send(embed=em)
 
 
 async def setup(bot):

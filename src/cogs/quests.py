@@ -61,8 +61,8 @@ class Quests(commands.Cog):
             name="",
             value=f"{self.return_questers(questers)} have been graciously chosen by the sentient Beings to {goal}.\nThey have **24 hours** to complete their journey which will take **{self.bot.ctime(endxp)}** collectively.",
         )
-        if self.bot.guild.system_channel:
-            await self.bot.guild.system_channel.send(" ".join(quester_pings), embed=embed)
+        if self.bot.channel:
+            await self.bot.channel.send(" ".join(quester_pings), embed=embed)
 
     async def endquest(self, quest: Quest, win):
         eligible = await Player.objects.all(online=True, level__gte=20)
@@ -96,8 +96,8 @@ class Quests(commands.Cog):
                 name="",
                 value="They are displeased, slowing everyone's clock **5% towards the next level!**",
             )
-        if self.bot.guild.system_channel:
-            await self.bot.guild.system_channel.send(" ".join(quester_pings), embed=embed)
+        if self.bot.channel:
+            await self.bot.channel.send(" ".join(quester_pings), embed=embed)
 
     @app_commands.command()
     async def quest(self, ctx: discord.Interaction):

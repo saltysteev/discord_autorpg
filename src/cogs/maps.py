@@ -49,8 +49,8 @@ class Maps(commands.Cog):
                 pings.append(f"<@!{player.uid}>")
             if opp.optin:
                 pings.append(f"<@!{opp.uid}>")
-            if self.bot.guild.system_channel:
-                await self.bot.guild.system_channel.send(" ".join(pings), embed=embed)
+            if self.bot.channel:
+                await self.bot.channel.send(" ".join(pings), embed=embed)
 
 
 async def setup(bot):

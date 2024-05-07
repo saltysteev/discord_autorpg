@@ -52,11 +52,11 @@ class User(commands.Cog):
             em.add_field(
                 name=":crossed_swords: Challenge!", value=cstring, inline=False
             )
-        if self.bot.guild.system_channel:
+        if self.bot.channel:
             if player.optin:
-                await self.bot.guild.system_channel.send(f"<@!{player.uid}>", embed=em)
+                await self.bot.channel.send(f"<@!{player.uid}>", embed=em)
             else:
-                await self.bot.guild.system_channel.send(embed=em)
+                await self.bot.channel.send(embed=em)
 
     @app_commands.command()
     @app_commands.describe(member="Which player's profile to display")
