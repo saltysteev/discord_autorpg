@@ -41,7 +41,9 @@ class Admincomms(commands.Cog):
         """Spawns a random event"""
         if ctx.user.id not in cfg.SERVER_ADMINS:
             return
-        player = await Player.objects.get_or_none(uid=member.id if member else ctx.user.id)
+        player = await Player.objects.get_or_none(
+            uid=member.id if member else ctx.user.id
+        )
         if not player:
             await ctx.response.send_message("Player not found", ephemeral=True)
         else:
@@ -50,11 +52,15 @@ class Admincomms(commands.Cog):
 
     @app_commands.command()
     @app_commands.default_permissions()
-    async def dropitem(self, ctx: discord.Interaction, member: Optional[discord.Member]):
+    async def dropitem(
+        self, ctx: discord.Interaction, member: Optional[discord.Member]
+    ):
         """Spawns a new quest with random participants"""
         if ctx.user.id not in cfg.SERVER_ADMINS:
             return
-        player = await Player.objects.get_or_none(uid=member.id if member else ctx.user.id)
+        player = await Player.objects.get_or_none(
+            uid=member.id if member else ctx.user.id
+        )
         if not player:
             await ctx.response.send_message("Player not found", ephemeral=True)
         else:
@@ -91,34 +97,18 @@ class Admincomms(commands.Cog):
 
     @app_commands.command()
     @app_commands.default_permissions()
-    async def newraid(self, ctx: discord.Interaction):
-        """Spawns a new quest with random participants"""
-        if ctx.user.id not in cfg.SERVER_ADMINS:
-            return
-        moncog = self.bot.get_cog("Monsters")
-        await moncog.bossrush()
-
-    @app_commands.command()
-    @app_commands.default_permissions()
-    async def endraid(self, ctx: discord.Interaction):
-        """Spawns a new quest with random participants"""
-        if ctx.user.id not in cfg.SERVER_ADMINS:
-            return
-        moncog = self.bot.get_cog("Monsters")
-        await moncog.endraid()
-
-    @app_commands.command()
-    @app_commands.default_permissions()
     async def fixusers(self, ctx: discord.Interaction):
         """Register a new user"""
         if ctx.user.id not in cfg.SERVER_ADMINS:
             return
-        for player in ctx.guild.members:
-            await Player.objects.get_or_create(
-                uid=player.id,
-                _defaults={"name": player.display_name},
-            )
-        await ctx.response.send_message("Players registered", ephemeral=True)
+        guild = ctx.guild
+        if guild:
+            for player in guild.members:
+                await Player.objects.get_or_create(
+                    uid=player.id,
+                    _defaults={"name": player.display_name},
+                )
+            await ctx.response.send_message("Players registered", ephemeral=True)
 
     @app_commands.command()
     @app_commands.default_permissions()

@@ -16,7 +16,7 @@ from utils.loot import get_item
 class User(commands.Cog):
     """Handler of players"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         super().__init__()
         self.bot = bot
 

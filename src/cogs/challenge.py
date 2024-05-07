@@ -10,6 +10,18 @@ from discord.ext import commands
 from utils.db import Player
 
 
+weapon_slots = [
+    "weapon",
+    "shield",
+    "helmet",
+    "chest",
+    "gloves",
+    "boots",
+    "ring",
+    "amulet",
+]
+
+
 class Challenge(commands.Cog):
     """Handler of challenge"""
 
@@ -51,20 +63,21 @@ class Challenge(commands.Cog):
         player_val = random.randint(1, player_max)
         opp_val = random.randint(1, opp_max)
         if player_val >= opp_val:
+            swapped_slot: str = random.choice(weapon_slots)
             if all(
                 [
                     player.align == 2,
-                    random.random() < 0.21,
-                    # player[f"{slot[1]}level"] < opp[f"{slot[1]}level"],
+                    random.random() < 0.15,
+                    getattr(player, swapped_slot)["dps"]
+                    > getattr(opp, swapped_slot)["dps"],
                 ]
             ):
-                # cstring = (
-                #    f"{player.name} ({player_val}/{player_max}) has challenged {opp.name} ({opp_val}/{opp_max}) and was victorious in battle!\n"
-                #    f"Because of their evil nature, {player.name} swapped their {slot[0]} with {opp.name}'s!\n"
-                #    f"Their time to next level has been accelerated by **{self.bot.ctime(nextval)}**!"
-                # )
+                temp = getattr(player, swapped_slot)
+                setattr(player, swapped_slot, getattr(opp, swapped_slot))
+                setattr(opp, swapped_slot, temp)
                 cstring = (
                     f"{player.name} ({player_val}/{player_max}) has challenged {opp.name} ({opp_val}/{opp_max}) and was victorious in battle!\n"
+                    f"Because of their evil nature, {player.name} swapped their {swapped_slot} with {opp.name}'s!\n"
                     f"Their time to next level has been accelerated by **{self.bot.ctime(nextval)}**!"
                 )
                 player.nextxp -= nextval
