@@ -23,13 +23,6 @@ class Loops(commands.Cog):
         self.main_loop.start()
         self.quest_check.start()
 
-    async def cog_load(self):
-        self.map_cog = self.bot.get_cog("Maps")
-        self.event_cog = self.bot.get_cog("Events")
-        self.mon_cog = self.bot.get_cog("Monsters")
-        self.user_cog = self.bot.get_cog("User")
-        self.quest_cog = self.bot.get_cog("Quests")
-
     @tasks.loop(seconds=cfg.INTERVAL)
     async def main_loop(self):
         """Loop timer that runs game logic on all online players"""
@@ -90,6 +83,11 @@ class Loops(commands.Cog):
     async def before_main_loop(self):
         """Get cogs ready before background loop is started"""
         await self.bot.wait_until_ready()
+        self.map_cog = self.bot.get_cog("Maps")
+        self.event_cog = self.bot.get_cog("Events")
+        self.mon_cog = self.bot.get_cog("Monsters")
+        self.user_cog = self.bot.get_cog("User")
+        self.quest_cog = self.bot.get_cog("Quests")
 
 
 async def setup(bot):
