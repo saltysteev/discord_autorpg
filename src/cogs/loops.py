@@ -83,11 +83,6 @@ class Loops(commands.Cog):
     async def before_main_loop(self):
         """Get cogs ready before background loop is started"""
         await self.bot.wait_until_ready()
-        self.map_cog = self.bot.get_cog("Maps")
-        self.event_cog = self.bot.get_cog("Events")
-        self.mon_cog = self.bot.get_cog("Monsters")
-        self.user_cog = self.bot.get_cog("User")
-        self.quest_cog = self.bot.get_cog("Quests")
 
 
 async def setup(bot):
