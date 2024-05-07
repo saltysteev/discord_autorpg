@@ -12,11 +12,13 @@ from utils import config as cfg
 from utils.db import Player
 from utils.loot import get_item
 
+from bot import AutoBot
+
 
 class User(commands.Cog):
     """Handler of players"""
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: AutoBot):
         super().__init__()
         self.bot = bot
 
@@ -51,9 +53,9 @@ class User(commands.Cog):
                 name=":crossed_swords: Challenge!", value=cstring, inline=False
             )
         if player.optin:
-            await self.bot.game_channel.send(f"<@!{player.uid}>", embed=em)
+            await self.bot.game_channel.send(f"<@!{player.uid}>", embed=em) # type: ignore
         else:
-            await self.bot.game_channel.send(embed=em)
+            await self.bot.game_channel.send(embed=em) # type: ignore
 
     @app_commands.command()
     @app_commands.rename(arg="player")

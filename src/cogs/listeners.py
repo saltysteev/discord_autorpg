@@ -8,11 +8,13 @@ from discord.ext import commands
 
 from utils.db import Player
 
+from bot import AutoBot
+
 
 class Listeners(commands.Cog):
     """Handler of generic commands"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: AutoBot):
         self.bot = bot
 
     @app_commands.command()

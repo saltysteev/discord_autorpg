@@ -8,6 +8,8 @@ from discord.ext import commands
 
 from utils.db import Player
 
+from bot import AutoBot
+
 
 class Align(discord.ui.View):
     def __init__(self):
@@ -38,7 +40,7 @@ class Align(discord.ui.View):
 class Alignment(commands.Cog):
     """Handler of alignment"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: AutoBot):
         super().__init__()
         self.bot = bot
 

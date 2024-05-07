@@ -12,11 +12,13 @@ from ormar.exceptions import NoMatch
 from utils import config as cfg
 from utils.db import Player, Quest
 
+from bot import AutoBot
+
 
 class Loops(commands.Cog):
     """Handler of main game loops"""
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: AutoBot):
         self.bot = bot
         self.main_loop.start()
         self.hints.start()
@@ -33,7 +35,6 @@ class Loops(commands.Cog):
     async def main_loop(self):
         """Loop timer that runs game logic on all online players"""
         players = await Player.objects.all(online=True)
-        map_cog = self.bot.get_cog("Maps")
         for player in players:
             await map_cog.mapmove(player)
             if player.currentxp >= player.nextxp:

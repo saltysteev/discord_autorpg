@@ -9,6 +9,8 @@ from discord.ext import commands
 
 from utils.db import Player
 
+from bot import AutoBot
+
 
 weapon_slots = [
     "weapon",
@@ -25,7 +27,7 @@ weapon_slots = [
 class Challenge(commands.Cog):
     """Handler of challenge"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: AutoBot):
         super().__init__()
         self.bot = bot
 

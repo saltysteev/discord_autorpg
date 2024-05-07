@@ -36,7 +36,7 @@ class Maps(commands.Cog):
                 ":crossed_swords: Two adventures encounter each other in the realm!"
             )
             if random.random() <= 0.25 and player.level >= 25:
-                challenge: Challenge = self.bot.get_cog("Challenge")
+                challenge = self.bot.get_cog("Challenge")
                 cstring = await challenge.challenge_opp(player, opp)
             else:
                 cstring = f"{player.name} and {opp.name} honorably bow to each other and pass, continuing on their journey peacefully."

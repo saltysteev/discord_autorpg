@@ -11,11 +11,13 @@ from utils import config as cfg
 from utils.db import Player
 from utils.loot import get_item
 
+from bot import AutoBot
+
 
 class Events(commands.Cog):
     """Handler of events"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: AutoBot):
         super().__init__()
         self.bot = bot
 
@@ -77,9 +79,9 @@ class Events(commands.Cog):
         )
         em.set_footer(text=footer)
         if player.optin:
-            await self.bot.game_channel.send(f"<@!{player.uid}>", embed=em)
+            await self.bot.game_channel.send(f"<@!{player.uid}>", embed=em) # type: ignore
         else:
-            await self.bot.game_channel.send(embed=em)
+            await self.bot.game_channel.send(embed=em) # type: ignore
 
 
 async def setup(bot):
