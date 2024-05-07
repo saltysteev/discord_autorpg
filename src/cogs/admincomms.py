@@ -37,12 +37,11 @@ class Admincomms(commands.Cog):
 
     @app_commands.command()
     @app_commands.default_permissions()
-    async def event(self, ctx: discord.Interaction, arg: Optional[discord.Member]):
+    async def event(self, ctx: discord.Interaction, member: Optional[discord.Member]):
         """Spawns a random event"""
         if ctx.user.id not in cfg.SERVER_ADMINS:
             return
-        arg = arg or ctx.user
-        player = await Player.objects.get_or_none(uid=arg.id)
+        player = await Player.objects.get_or_none(uid=member.id if member else ctx.user.id)
         if not player:
             await ctx.response.send_message("Player not found", ephemeral=True)
         else:
@@ -51,12 +50,11 @@ class Admincomms(commands.Cog):
 
     @app_commands.command()
     @app_commands.default_permissions()
-    async def dropitem(self, ctx: discord.Interaction, arg: Optional[discord.Member]):
+    async def dropitem(self, ctx: discord.Interaction, member: Optional[discord.Member]):
         """Spawns a new quest with random participants"""
         if ctx.user.id not in cfg.SERVER_ADMINS:
             return
-        arg = arg or ctx.user
-        player = await Player.objects.get_or_none(uid=arg.id)
+        player = await Player.objects.get_or_none(uid=member.id if member else ctx.user.id)
         if not player:
             await ctx.response.send_message("Player not found", ephemeral=True)
         else:

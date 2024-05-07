@@ -11,7 +11,7 @@ from utils.db import Player
 
 class Align(discord.ui.View):
     def __init__(self):
-        self.choice = None
+        self.choice = 0
         super().__init__()
 
     @discord.ui.button(label="Good", style=discord.ButtonStyle.green)
@@ -67,7 +67,7 @@ class Alignment(commands.Cog):
         )
         if player.align != view.choice:
             player.align = view.choice
-            await player.update(_columns="alignment")
+            await player.update(_columns=["align"])
         await ctx.edit_original_response(content=response_string, view=None)
 
 

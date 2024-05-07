@@ -58,10 +58,9 @@ class User(commands.Cog):
     @app_commands.command()
     @app_commands.rename(arg="player")
     @app_commands.describe(arg="Which player's profile to display")
-    async def profile(self, ctx: discord.Interaction, arg: Optional[discord.Member]):
+    async def profile(self, ctx: discord.Interaction, member: Optional[discord.Member]):
         """Displays a player's profile, or your own if no argument is given. Example: /profile @steev"""
-        arg = arg or ctx.user
-        player = await Player.objects.get(uid=arg.id)
+        player = await Player.objects.get(uid=member.id if member else ctx.user.id)
         nextlevel = player.nextxp - player.currentxp
         if nextlevel < 1:
             nextlevel = 1
@@ -72,14 +71,11 @@ class User(commands.Cog):
                 alignment = "Evil"
             case _:
                 alignment = "Neutral"
-        if not player.onquest:
-            qstring = "not on a quest"
-        else:
-            qstring = "on a quest!"
+        qstring = "not on a quest" if not player.onquest else "on a quest!"
         em = discord.Embed(color=discord.Color(2899536))
         em.title = f"View {player.name}'s Adventure Profile"
-        em.url = f"https://autorpg.deadnet.org/profile.php?uid={arg.id}"
-        em.set_thumbnail(url=arg.display_avatar.url)
+        em.url = f"https://autorpg.deadnet.org/profile.php?uid={player.uid}"
+        em.set_thumbnail(url=player.avatar_url)
         em.add_field(name="Level", value=player.level)
         em.add_field(name="Class", value=player.job)
         em.add_field(name="Alignment", value=alignment)

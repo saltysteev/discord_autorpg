@@ -5,8 +5,6 @@ loot.py
 import math
 import random
 from enum import Enum
-import typing
-from dataclasses import dataclass
 
 from utils.db import Player
 
