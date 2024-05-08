@@ -100,10 +100,11 @@ class Monsters(commands.Cog):
                 value=f"They challenged the monster and was heroicly bested in combat, slowing them **{self.bot.ctime(val)}** from level {player.level + 1}!\n"
                 f"They now reach the next level in **{self.bot.ctime(player.nextxp - player.currentxp)}**",
             )
-        if player.optin:
-            await self.bot.game_channel.send(f"<@!{player.uid}>", embed=embed) # type: ignore
-        else:
-            await self.bot.game_channel.send(embed=embed) # type: ignore
+        if self.bot.channel:
+            if player.optin:
+                await self.bot.channel.send(f"<@!{player.uid}>", embed=embed)
+            else:
+                await self.bot.channel.send(embed=embed)
 
 
 async def setup(bot):
