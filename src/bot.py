@@ -25,6 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import sys
 import logging
 import logging.handlers
 from pathlib import Path
@@ -35,7 +36,7 @@ import uvloop
 from discord.ext import commands
 
 from utils import config as cfg
-from utils.db import Player, database
+from utils.db import Player, database, database_init
 
 
 class AutoBot(commands.Bot):
@@ -60,15 +61,25 @@ class AutoBot(commands.Bot):
                 logging.error("Failed to load cog %s", ext, exc_info=exception)
         logging.info("Loaded %s cogs", len(self.initial_ext))
 
+        # Initialize the database
+        await database_init(self)
+        logging.info("Initialized database, generating tables if needed")
+
         # Sync slash commands to guild
         await self.tree.sync()
 
     async def on_ready(self):
         """Once setup_hook has finished and bot is ready"""
-        self.guild = await self.fetch_guild(cfg.GUILD_ID, with_counts=False)
         self.channel = self.get_channel(cfg.GAME_CHANNEL)
+        if cfg.GAME_CHANNEL == 0:
+            logging.info(
+                "WARNING: Game channel is not set in config, you will not receive game updates!"
+            )
+        self.guild = await self.fetch_guild(cfg.GUILD_ID)
         self.pcount = await Player.objects.filter(online=True).count()
-        logging.info("Game started with %s online players, guild: %s", self.pcount, self.guild)
+        logging.info(
+            "Game started with %s online players, guild: %s", self.pcount, self.guild
+        )
 
     @staticmethod
     def ctime(seconds: int) -> str:
@@ -97,9 +108,9 @@ class AutoBot(commands.Bot):
         item_role = discord.utils.get(self.guild.roles, name=item["rank"])
         if item_role is not None:
             return (
-                f"<@&{item_role.id}> {item["quality"]} {item["prefix"]}{item["name"]}{item["suffix"]} ({item["condition"]}) ({item["dps"]})"
+                f"<@&{item_role.id}> {item['quality']} {item['prefix']}{item['name']}{item['suffix']} ({item['condition']}) ({item['dps']})"
                 if not item["flair"]
-                else f"<@&{item_role.id}> {item["quality"]} {item["prefix"]}{item["name"]}{item["suffix"]} ({item["condition"]}) ({item["dps"]})\n> *{item["flair"]}*"
+                else f"<@&{item_role.id}> {item['quality']} {item['prefix']}{item['name']}{item['suffix']} ({item['condition']}) ({item['dps']})\n> *{item['flair']}*"
             )
 
     @staticmethod
@@ -160,14 +171,28 @@ class AutoBot(commands.Bot):
             name=after.display_name, avatar_url=after.display_avatar.url
         )
 
+    async def on_guild_join(self, guild: discord.Guild):
+        """When the bot joins a new guild, create the item rarity roles"""
+        await self.createroles(guild)
+        for player in guild.members:
+            await Player.objects.get_or_create(
+                uid=player.id,
+                _defaults={"name": player.display_name},
+            )
+        logging.info("Bot joined in guild: %s", guild.name)
+        logging.info("Created item rarity roles and registered players")
+
 
 async def main():
     """Main bot launch function"""
-    if not Path("src/utils/config.py").exists():
-        return print("Config file missing or not changed!")
+    config_path = Path(__file__).parent / "utils" / "config.py"
+    if not config_path.exists():
+        return logging.error("Config file missing or not found")
 
     token: str = cfg.DISCORD_TOKEN
-    discord.utils.setup_logging(level=logging.INFO, root=True)
+    discord.utils.setup_logging(
+        handler=logging.StreamHandler(sys.stdout), level=logging.INFO, root=True
+    )
     exts = [
         "cogs.admincomms",
         "cogs.alignment",
@@ -183,28 +208,17 @@ async def main():
     ]
 
     async with database:
-        async with AutoBot(command_prefix="", initial_ext=exts) as bot:
+        async with AutoBot(commands.when_mentioned, initial_ext=exts) as bot:
             try:
                 await bot.start(token)
             except discord.DiscordException as e:
-                print(f"Bot failed to start: {e}")
+                logging.error("Bot failed to start: %s", e)
             except KeyboardInterrupt:
                 await database.disconnect()
                 await bot.close()
 
 
 if __name__ == "__main__":
-    print(
-        (
-            " █████╗ ██╗   ██╗████████╗ ██████╗ ██████╗ ██████╗  ██████╗ \n"
-            "██╔══██╗██║   ██║╚══██╔══╝██╔═══██╗██╔══██╗██╔══██╗██╔════╝ \n"
-            "███████║██║   ██║   ██║   ██║   ██║██████╔╝██████╔╝██║  ███╗\n"
-            "██╔══██║██║   ██║   ██║   ██║   ██║██╔══██╗██╔═══╝ ██║   ██║\n"
-            "██║  ██║╚██████╔╝   ██║   ╚██████╔╝██║  ██║██║     ╚██████╔╝\n"
-            "╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝      ╚═════╝ \n"
-            "                                  ~ a discord game | @steev   "
-        )
-    )
     try:
         uvloop.run(main())
     except KeyboardInterrupt:
