@@ -61,18 +61,21 @@ class Quests(commands.Cog):
             name="",
             value=f"{self.return_questers(questers)} have been graciously chosen by the sentient Beings to {goal}.\nThey have **24 hours** to complete their journey which will take **{self.bot.ctime(endxp)}** collectively.",
         )
-        await self.bot.game_channel.send(embed=embed) # type: ignore
-        await self.bot.talk_channel.send(" ".join(quester_pings), embed=embed) # type: ignore
+        if self.bot.channel:
+            await self.bot.channel.send(" ".join(quester_pings), embed=embed)
 
     async def endquest(self, quest: Quest, win):
         eligible = await Player.objects.all(online=True, level__gte=20)
         total = cfg.QUEST_REWARD if win else cfg.QUEST_PENALTY
+        quester_pings = []
         for p in eligible:
             nextval = int(total * (p.nextxp - p.currentxp))
             p.nextxp = p.nextxp - nextval if win else p.nextxp + nextval
         await Player.objects.bulk_update(eligible, columns=["nextxp"])
         questers = await Player.objects.all(onquest=True)
         for i in questers:
+            if i.optin:
+                quester_pings.append(f"<@!{i.uid}>")
             i.onquest = False
             i.qid = 0
             i.totalquests += 1
@@ -93,8 +96,8 @@ class Quests(commands.Cog):
                 name="",
                 value="They are displeased, slowing everyone's clock **5% towards the next level!**",
             )
-        await self.bot.game_channel.send(embed=embed) # type: ignore
-        await self.bot.talk_channel.send(embed=embed) # type: ignore
+        if self.bot.channel:
+            await self.bot.channel.send(" ".join(quester_pings), embed=embed)
 
     @app_commands.command()
     async def quest(self, ctx: discord.Interaction):

@@ -9,11 +9,13 @@ from utils import config as cfg
 from utils.db import Player, Quest
 from utils.loot import get_item
 
+from bot import AutoBot
+
 
 class Admincomms(commands.Cog):
     """Handler of classes"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: AutoBot):
         super().__init__()
         self.bot = bot
 
@@ -49,6 +51,7 @@ class Admincomms(commands.Cog):
         else:
             event_cog = self.bot.get_cog("Events")
             await event_cog.randomevent(player)
+            await ctx.response.defer()
 
     @app_commands.command()
     @app_commands.default_permissions()
@@ -65,7 +68,7 @@ class Admincomms(commands.Cog):
             await ctx.response.send_message("Player not found", ephemeral=True)
         else:
             item = await get_item(player)
-            await ctx.response.send_message(self.bot.item_string(item[0]))
+            await ctx.response.send_message(self.bot.item_string(item[0]), ephemeral=True)
 
     @app_commands.command()
     @app_commands.default_permissions()

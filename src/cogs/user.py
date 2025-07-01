@@ -64,8 +64,7 @@ class User(commands.Cog):
                 await self.bot.channel.send(embed=em)
 
     @app_commands.command()
-    @app_commands.rename(arg="player")
-    @app_commands.describe(arg="Which player's profile to display")
+    @app_commands.describe(member="Which player's profile to display")
     async def profile(self, ctx: discord.Interaction, member: Optional[discord.Member]):
         """Displays a player's profile, or your own if no argument is given. Example: /profile @steev"""
         player = await Player.objects.get(uid=member.id if member else ctx.user.id)

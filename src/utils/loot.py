@@ -322,9 +322,13 @@ async def get_item(player: Player):
     slot = random.choice(list(Slots))
     item = await generate_item(slot.value)
     replaced_item: bool = False
+    if not getattr(player, slot.name):
+        setattr(player, slot.name, item)
+        await player.update(_columns=[slot.name])
+        replaced_item = True
 
     if item["dps"] > getattr(player, slot.name)["dps"]:
-        getattr(player, slot.name)["dps"] = item["dps"]
+        setattr(player, slot.name, item)
         await player.update(_columns=[slot.name])
         replaced_item = True
 
