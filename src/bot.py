@@ -66,6 +66,11 @@ class AutoBot(commands.Bot):
 
     async def on_ready(self):
         """Once setup_hook has finished and bot is ready"""
+        self.channel = self.get_channel(cfg.GAME_CHANNEL)
+        if cfg.GAME_CHANNEL == 0:
+            logging.info(
+                "WARNING: Game channel is not set in config, you will not receive game updates!"
+            )
         self.guild = await self.fetch_guild(cfg.GUILD_ID)
         self.pcount = await Player.objects.filter(online=True).count()
         logging.info(
@@ -165,7 +170,8 @@ class AutoBot(commands.Bot):
 
 async def main():
     """Main bot launch function"""
-    if not Path("src/utils/config.py").exists():
+    config_path = Path(__file__).parent / "utils" / "config.py"
+    if not config_path.exists():
         return logging.error("Config file missing or not found")
 
     token: str = cfg.DISCORD_TOKEN

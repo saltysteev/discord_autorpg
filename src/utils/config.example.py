@@ -23,8 +23,6 @@ SERVER_ADMINS = [261960455369523201]
 # Main game channel ID that posts all player level ups/events/etc
 GAME_CHANNEL = 0
 # Talking channel ID that can be used to post tips/quest info/etc
-TALK_CHANNEL = 0
-# The interval in which the game loops (in seconds)
 INTERVAL = 5
 # The base time to level in seconds, 600 seconds = 10 minutes (base * (exp ** current level))
 TIME_BASE = 600
