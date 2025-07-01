@@ -4,6 +4,7 @@ db.py
 
 import random
 from datetime import datetime
+import discord
 
 import databases
 import ormar
@@ -161,10 +162,10 @@ class Player(ormar.Model):
     )
 
 
-async def database_init(guild):
+async def database_init(members):
     # Database creation if not exists
     basemeta.metadata.create_all(engine)
-    for player in guild.members:
+    for player in members:
         await Player.objects.get_or_create(
             uid=player.id,
             _defaults={"name": player.display_name},

@@ -75,7 +75,10 @@ class AutoBot(commands.Bot):
         self.pcount = await Player.objects.filter(online=True).count()
 
         # Initialize the database
-        await database_init(self.guild)
+        members = []
+        async for member in self.guild.fetch_members(limit=None):
+            members.append(member)
+        await database_init(members)
 
         logging.info(
             "Game started with %s online players, guild: %s", self.pcount, self.guild
