@@ -164,7 +164,8 @@ class Player(ormar.Model):
 async def database_init(bot):
     # Database creation if not exists
     basemeta.metadata.create_all(engine)
-    await Player.objects.get_or_create(
-        uid=bot.user.id,
-        _defaults={"name": bot.user.name},
-    )
+    for player in bot.guild.members:
+        await Player.objects.get_or_create(
+            uid=player.id,
+            _defaults={"name": player.display_name},
+        )
