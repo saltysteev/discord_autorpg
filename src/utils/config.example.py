@@ -7,6 +7,11 @@ DEBUG = False
 # Game version
 VERSION = "3.4.0"
 
+# Game info - displayed when a player uses /info
+GAME_INFO = f"```AutoRPG (v{VERSION}) - by steev | https://autorpg.deadnet.org/```"
+# Game website URL - also used in a player's profile link. Do not use a trailing slash!
+GAME_URL = "https://autorpg.deadnet.org"
+
 # Guild ID, grabbed from Discord
 GUILD_ID = 0
 # The unique Discord token
@@ -35,6 +40,8 @@ QUEST_PENALTY = 1.05
 MAP_SIZE = [1000, 1000]
 # Enable or disable PVP, some people might be in low population servers or wish to have this off
 ENABLE_COMBAT = True
+# Minimum level a player has to be to be randomly selected as a challenger
+MIN_CHALLENGE_LEVEL = 25
 # Name of weapon slots
 WEAPON_SLOTS = [
     "weapon",

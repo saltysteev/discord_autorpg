@@ -3,6 +3,7 @@ user.py
 """
 
 from typing import Optional
+import random
 
 import discord
 from discord import app_commands
@@ -47,15 +48,20 @@ class User(commands.Cog):
         )
         em.set_footer(text=footer)
         if cfg.ENABLE_COMBAT:
-            challenge = self.bot.get_cog("Challenge")
-            cstring = await challenge.challenge_opp(player)
-            em.add_field(
-                name=":crossed_swords: Challenge!", value=cstring, inline=False
+            eligible = await Player.objects.exclude(uid=player.uid).all(
+                level__gte=cfg.MIN_CHALLENGE_LEVEL, online=True
             )
-        if player.optin:
-            await self.bot.game_channel.send(f"<@!{player.uid}>", embed=em) # type: ignore
-        else:
-            await self.bot.game_channel.send(embed=em) # type: ignore
+            if eligible:
+                challenge = self.bot.get_cog("Challenge")
+                cstring = await challenge.challenge_opp(player, random.choice(eligible))
+                em.add_field(
+                    name=":crossed_swords: Challenge!", value=cstring, inline=False
+                )
+        if self.bot.channel:
+            if player.optin:
+                await self.bot.channel.send(f"<@!{player.uid}>", embed=em)
+            else:
+                await self.bot.channel.send(embed=em)
 
     @app_commands.command()
     @app_commands.rename(arg="player")
@@ -76,7 +82,7 @@ class User(commands.Cog):
         qstring = "not on a quest" if not player.onquest else "on a quest!"
         em = discord.Embed(color=discord.Color(2899536))
         em.title = f"View {player.name}'s Adventure Profile"
-        em.url = f"https://autorpg.deadnet.org/profile.php?uid={player.uid}"
+        em.url = f"{cfg.GAME_URL}/profile.php?uid={player.uid}"
         em.set_thumbnail(url=player.avatar_url)
         em.add_field(name="Level", value=player.level)
         em.add_field(name="Class", value=player.job)
@@ -118,7 +124,7 @@ class User(commands.Cog):
             ]
         )
         em.set_footer(
-            text=f'They are currently {"online" if player.online else "offline"} and {qstring}'
+            text=f"They are currently {'online' if player.online else 'offline'} and {qstring}"
         )
         await ctx.response.send_message(embeds=[em, equip_embed])
 
@@ -126,7 +132,7 @@ class User(commands.Cog):
     async def info(self, interaction: discord.Interaction):
         """Displays basic bot information"""
         await interaction.response.send_message(
-            f"```AutoRPG (v{cfg.VERSION}) - by steev | https://autorpg.deadnet.org/```",
+            cfg.GAME_INFO,
             ephemeral=True,
         )
 
