@@ -36,7 +36,7 @@ import uvloop
 from discord.ext import commands
 
 from utils import config as cfg
-from utils.db import Player, database
+from utils.db import Player, database, database_init
 
 
 class AutoBot(commands.Bot):
@@ -60,6 +60,10 @@ class AutoBot(commands.Bot):
             except discord.DiscordException as exception:
                 logging.error("Failed to load cog %s", ext, exc_info=exception)
         logging.info("Loaded %s cogs", len(self.initial_ext))
+
+        # Initialize the database
+        await database_init(self)
+        logging.info("Initialized database, generating tables if needed")
 
         # Sync slash commands to guild
         await self.tree.sync()
@@ -166,6 +170,17 @@ class AutoBot(commands.Bot):
         await Player.objects.filter(uid=after.id).update(
             name=after.display_name, avatar_url=after.display_avatar.url
         )
+
+    async def on_guild_join(self, guild: discord.Guild):
+        """When the bot joins a new guild, create the item rarity roles"""
+        await self.createroles(guild)
+        for player in guild.members:
+            await Player.objects.get_or_create(
+                uid=player.id,
+                _defaults={"name": player.display_name},
+            )
+        logging.info("Bot joined in guild: %s", guild.name)
+        logging.info("Created item rarity roles and registered players")
 
 
 async def main():

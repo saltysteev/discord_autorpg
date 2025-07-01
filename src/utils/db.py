@@ -13,14 +13,17 @@ from utils.config import DEBUG, DBTYPE, DBUSER, DBPASS, DBHOST, DBPORT, DBNAME
 
 DBSTRING = f"{DBTYPE}://{DBUSER}:{DBPASS}@{DBHOST}:{DBPORT}/{DBNAME}"
 
+metadata = sqlalchemy.MetaData()
 database = (
     databases.Database(DBSTRING, force_rollback=True)
     if DEBUG
     else databases.Database(DBSTRING)
 )
-
-metadata = sqlalchemy.MetaData()
-basemeta = ormar.OrmarConfig(database=database, metadata=metadata)
+basemeta = ormar.OrmarConfig(
+    database=database,
+    metadata=metadata,
+    engine=sqlalchemy.create_engine(DBSTRING),
+)
 
 
 class Quest(ormar.Model):
@@ -154,4 +157,13 @@ class Player(ormar.Model):
             "rank": "Common",
             "flair": None,
         }
+    )
+
+
+async def database_init(bot):
+    # Database creation if not exists
+    basemeta.metadata.create_all(basemeta.engine)
+    await Player.objects.get_or_create(
+        uid=bot.user.id,
+        _defaults={"name": bot.user.name},
     )
