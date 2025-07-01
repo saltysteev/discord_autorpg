@@ -19,10 +19,11 @@ database = (
     if DEBUG
     else databases.Database(DBSTRING)
 )
+engine = sqlalchemy.create_engine(DBSTRING)
 basemeta = ormar.OrmarConfig(
     database=database,
     metadata=metadata,
-    engine=sqlalchemy.create_engine(DBSTRING),
+    engine=engine,
 )
 
 
@@ -162,7 +163,7 @@ class Player(ormar.Model):
 
 async def database_init(bot):
     # Database creation if not exists
-    basemeta.metadata.create_all(basemeta.engine)
+    basemeta.metadata.create_all(engine)
     await Player.objects.get_or_create(
         uid=bot.user.id,
         _defaults={"name": bot.user.name},
