@@ -161,10 +161,10 @@ class Player(ormar.Model):
     )
 
 
-async def database_init(bot):
+async def database_init(guild):
     # Database creation if not exists
     basemeta.metadata.create_all(engine)
-    for player in bot.guild.members:
+    for player in guild.members:
         await Player.objects.get_or_create(
             uid=player.id,
             _defaults={"name": player.display_name},

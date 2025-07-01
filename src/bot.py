@@ -71,12 +71,12 @@ class AutoBot(commands.Bot):
                 "WARNING: Game channel is not set in config, you will not receive game updates!"
             )
 
-        # Initialize the database
-        await database_init(self)
-        logging.info("Initialized database, generating tables if needed")
-
         self.guild = await self.fetch_guild(cfg.GUILD_ID)
         self.pcount = await Player.objects.filter(online=True).count()
+
+        # Initialize the database
+        await database_init(self.guild)
+
         logging.info(
             "Game started with %s online players, guild: %s", self.pcount, self.guild
         )
