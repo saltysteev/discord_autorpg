@@ -60,10 +60,6 @@ class AutoBot(commands.Bot):
                 logging.error("Failed to load cog %s", ext, exc_info=exception)
         logging.info("Loaded %s cogs", len(self.initial_ext))
 
-        # Initialize the database
-        await database_init(self)
-        logging.info("Initialized database, generating tables if needed")
-
         # Sync slash commands to guild
         await self.tree.sync()
 
@@ -74,6 +70,11 @@ class AutoBot(commands.Bot):
             logging.info(
                 "WARNING: Game channel is not set in config, you will not receive game updates!"
             )
+
+        # Initialize the database
+        await database_init(self)
+        logging.info("Initialized database, generating tables if needed")
+
         self.guild = await self.fetch_guild(cfg.GUILD_ID)
         self.pcount = await Player.objects.filter(online=True).count()
         logging.info(
