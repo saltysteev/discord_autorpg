@@ -80,9 +80,9 @@ class Events(commands.Cog):
         em.set_footer(text=footer)
         if self.bot.channel:
             if player.optin:
-                await self.bot.channel.send(f"<@!{player.uid}>", embed=em)
+                await self.bot.channel.send(f"<@!{player.uid}>", embed=em)  # type: ignore
             else:
-                await self.bot.channel.send(embed=em)
+                await self.bot.channel.send(embed=em)  # type: ignore
 
 
 async def setup(bot):
