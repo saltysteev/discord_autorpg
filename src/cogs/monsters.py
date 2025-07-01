@@ -8,7 +8,7 @@ import random
 import discord
 from discord.ext import commands
 
-from utils import config as cfg
+import utils.config as cfg
 from utils.db import Player
 
 from bot import AutoBot

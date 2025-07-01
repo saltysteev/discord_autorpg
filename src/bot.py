@@ -26,7 +26,6 @@ SOFTWARE.
 """
 
 import logging
-import logging.handlers
 from pathlib import Path
 from typing import List, Optional
 
@@ -34,7 +33,7 @@ import discord
 import uvloop
 from discord.ext import commands
 
-from utils import config as cfg
+import utils.config as cfg
 from utils.db import Player, database
 
 
@@ -68,7 +67,9 @@ class AutoBot(commands.Bot):
         self.guild = await self.fetch_guild(cfg.GUILD_ID, with_counts=False)
         self.channel = self.get_channel(cfg.GAME_CHANNEL)
         self.pcount = await Player.objects.filter(online=True).count()
-        logging.info("Game started with %s online players, guild: %s", self.pcount, self.guild)
+        logging.info(
+            "Game started with %s online players, guild: %s", self.pcount, self.guild
+        )
 
     @staticmethod
     def ctime(seconds: int) -> str:
@@ -97,9 +98,9 @@ class AutoBot(commands.Bot):
         item_role = discord.utils.get(self.guild.roles, name=item["rank"])
         if item_role is not None:
             return (
-                f"<@&{item_role.id}> {item["quality"]} {item["prefix"]}{item["name"]}{item["suffix"]} ({item["condition"]}) ({item["dps"]})"
+                f"<@&{item_role.id}> {item['quality']} {item['prefix']}{item['name']}{item['suffix']} ({item['condition']}) ({item['dps']})"
                 if not item["flair"]
-                else f"<@&{item_role.id}> {item["quality"]} {item["prefix"]}{item["name"]}{item["suffix"]} ({item["condition"]}) ({item["dps"]})\n> *{item["flair"]}*"
+                else f"<@&{item_role.id}> {item['quality']} {item['prefix']}{item['name']}{item['suffix']} ({item['condition']}) ({item['dps']})\n> *{item['flair']}*"
             )
 
     @staticmethod

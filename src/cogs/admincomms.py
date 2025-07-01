@@ -5,7 +5,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from utils import config as cfg
+import utils.config as cfg
 from utils.db import Player, Quest
 from utils.loot import get_item
 
@@ -68,7 +68,9 @@ class Admincomms(commands.Cog):
             await ctx.response.send_message("Player not found", ephemeral=True)
         else:
             item = await get_item(player)
-            await ctx.response.send_message(self.bot.item_string(item[0]), ephemeral=True)
+            await ctx.response.send_message(
+                self.bot.item_string(item[0]), ephemeral=True
+            )
 
     @app_commands.command()
     @app_commands.default_permissions()

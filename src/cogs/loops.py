@@ -5,11 +5,10 @@ loops.py
 import datetime
 import random
 
-import discord
 from discord.ext import commands, tasks
 from ormar.exceptions import NoMatch
 
-from utils import config as cfg
+import utils.config as cfg
 from utils.db import Player, Quest
 
 from bot import AutoBot

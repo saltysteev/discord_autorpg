@@ -8,7 +8,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from utils import config as cfg
+import utils.config as cfg
 from utils.db import Player
 from utils.loot import get_item
 
@@ -118,7 +118,7 @@ class User(commands.Cog):
             ]
         )
         em.set_footer(
-            text=f'They are currently {"online" if player.online else "offline"} and {qstring}'
+            text=f"They are currently {'online' if player.online else 'offline'} and {qstring}"
         )
         await ctx.response.send_message(embeds=[em, equip_embed])
 
