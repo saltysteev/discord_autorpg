@@ -168,5 +168,7 @@ async def database_init(members):
     for player in members:
         await Player.objects.get_or_create(
             uid=player.id,
+            x=random.randint(1, 1000),
+            y=random.randint(1, 1000),
             _defaults={"name": player.display_name},
         )
