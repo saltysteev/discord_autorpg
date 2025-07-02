@@ -10,9 +10,8 @@ from discord import app_commands
 from discord.ext import commands
 
 import utils.config as cfg
-from utils.db import Player, Quest
-
 from bot import AutoBot
+from utils.db import Player, Quest
 
 
 class Quests(commands.Cog):

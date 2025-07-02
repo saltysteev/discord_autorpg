@@ -6,10 +6,9 @@ from discord import app_commands
 from discord.ext import commands
 
 import utils.config as cfg
+from bot import AutoBot
 from utils.db import Player, Quest
 from utils.loot import get_item
-
-from bot import AutoBot
 
 
 class Admincomms(commands.Cog):

@@ -257,12 +257,12 @@ async def weighted_choice(items: list) -> dict:
     # def weight(arr):
     #     return [item for obj in arr for item in [obj] * int(obj["weight"] * 100)]
 
-    names = [item['name'] for item in items]
-    weights = [item['weight'] for item in items]
+    names = [item["name"] for item in items]
+    weights = [item["weight"] for item in items]
     chosenName = random.choices(names, weights)[0]
 
     for item in items:
-        if item['name'] == chosenName:
+        if item["name"] == chosenName:
             return item
     return {}
 

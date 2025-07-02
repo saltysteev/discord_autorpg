@@ -9,9 +9,8 @@ import discord
 from discord.ext import commands
 
 import utils.config as cfg
-from utils.db import Player
-
 from bot import AutoBot
+from utils.db import Player
 
 utc = datetime.timezone.utc
 raidtime = datetime.time(hour=14, minute=0, tzinfo=utc)

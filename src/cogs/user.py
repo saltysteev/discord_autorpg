@@ -2,18 +2,17 @@
 user.py
 """
 
-from typing import Optional
 import random
+from typing import Optional
 
 import discord
 from discord import app_commands
 from discord.ext import commands
 
 import utils.config as cfg
+from bot import AutoBot
 from utils.db import Player
 from utils.loot import get_item
-
-from bot import AutoBot
 
 
 class User(commands.Cog):
@@ -126,6 +125,52 @@ class User(commands.Cog):
             text=f"They are currently {'online' if player.online else 'offline'} and {qstring}"
         )
         await ctx.response.send_message(embeds=[em, equip_embed])
+
+    @app_commands.command()
+    @app_commands.describe(amount="How many loot tokens to use?")
+    async def pull(self, ctx: discord.Interaction, amount: Optional[int]):
+        """Uses a loot token to get a random item. Can use be used up to 10 times at once."""
+        player = await Player.objects.get(ctx.user.id)
+        if player.tokens < 1:
+            await ctx.response.send_message(
+                "You do not have any loot tokens! You gain one token every 12 hours idling.",
+                ephemeral=True,
+            )
+            return
+        if amount > player.tokens:
+            await ctx.response.send_message(
+                f"You do not have that many tokens! You have {player.tokens} available to use.",
+                ephemeral=True,
+            )
+            return
+        if amount > 10:
+            await ctx.response.send_message(
+                "You can only use up to 10 tokens at once.",
+                ephemeral=True,
+            )
+            return
+        embed = discord.Embed(
+            title=f"{ctx.user.name} finds a bountiful chest in the wild!",
+            color=discord.Color(cfg.COLOR_LOOT),
+        )
+        embed.set_thumbnail(url=ctx.user.display_avatar.url)
+        for _ in range(amount):
+            item = await get_item(player)
+            if item[2]:
+                embed.add_field(
+                    name=f"You found a new {item[1]}, stronger item and equipped it!",
+                    value=self.bot.item_string(item[0]),
+                    inline=False,
+                )
+            else:
+                embed.add_field(
+                    name=f"You found a new {item[1]}, but it was weaker than your current one.",
+                    value=self.bot.item_string(item[0]),
+                    inline=False,
+                )
+        await ctx.response.send_message(embed=embed)
+        player.tokens -= amount
+        await player.update(_columns=["tokens"])
 
     @app_commands.command()
     async def info(self, interaction: discord.Interaction):

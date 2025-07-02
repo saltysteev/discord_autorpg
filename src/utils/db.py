@@ -4,13 +4,12 @@ db.py
 
 import random
 from datetime import datetime
-import discord
 
 import databases
 import ormar
 import sqlalchemy
 
-from utils.config import DEBUG, DBTYPE, DBUSER, DBPASS, DBHOST, DBPORT, DBNAME
+from utils.config import DBHOST, DBNAME, DBPASS, DBPORT, DBTYPE, DBUSER, DEBUG
 
 DBSTRING = f"{DBTYPE}://{DBUSER}:{DBPASS}@{DBHOST}:{DBPORT}/{DBNAME}"
 
@@ -64,6 +63,7 @@ class Player(ormar.Model):
     bid: int = ormar.BigInteger(default=0)
     optin: bool = ormar.Boolean(default=False)
     avatar_url: str = ormar.Text(default="")
+    tokens: int = ormar.Integer(default=0)
     weapon: str = ormar.JSON(
         default={
             "name": "Fists",

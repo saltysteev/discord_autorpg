@@ -6,9 +6,8 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from utils.db import Player
-
 from bot import AutoBot
+from utils.db import Player
 
 
 class Jobs(commands.Cog):

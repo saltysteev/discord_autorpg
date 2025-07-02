@@ -8,10 +8,9 @@ import discord
 from discord.ext import commands
 
 import utils.config as cfg
+from bot import AutoBot
 from utils.db import Player
 from utils.loot import get_item
-
-from bot import AutoBot
 
 
 class Events(commands.Cog):

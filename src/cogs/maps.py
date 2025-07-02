@@ -8,9 +8,8 @@ import discord
 from discord.ext import commands
 
 import utils.config as cfg
-from utils.db import Player
-
 from bot import AutoBot
+from utils.db import Player
 
 
 class Maps(commands.Cog):

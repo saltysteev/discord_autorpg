@@ -51,6 +51,8 @@ WEAPON_SLOTS = [
     "ring",
     "amulet",
 ]
+# Time in seconds that a player needs to idle to get a loot token
+TOKEN_TIME = 43200  # 12 hours
 # Current holiday, this changes the file that is loaded for events and bosses
 # HOLIDAY_LIST is a list of the names of the holidays. This also tells the bot what folder the events are in
 # For example, if Christmas is selected, it reads ./txtfiles/christmas/
@@ -85,7 +87,7 @@ TIPS = [
 ]
 
 # Database Config
-DBTYPE = "mysql"
+DBTYPE = "mysql+aiomysql"
 DBUSER = "user"
 DBPASS = "pass"
 DBHOST = "localhost"

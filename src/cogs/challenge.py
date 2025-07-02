@@ -7,10 +7,8 @@ from typing import Optional
 
 from discord.ext import commands
 
-from utils.db import Player
-
 from bot import AutoBot
-
+from utils.db import Player
 
 weapon_slots = [
     "weapon",

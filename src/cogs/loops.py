@@ -9,9 +9,8 @@ from discord.ext import commands, tasks
 from ormar.exceptions import NoMatch
 
 import utils.config as cfg
-from utils.db import Player, Quest
-
 from bot import AutoBot
+from utils.db import Player, Quest
 
 
 class Loops(commands.Cog):
@@ -30,6 +29,8 @@ class Loops(commands.Cog):
             await self.map_cog.mapmove(player)
             if player.currentxp >= player.nextxp:
                 await self.user_cog.levelup(player)
+            if player.totalxp % cfg.TOKEN_TIME < cfg.INTERVAL:
+                player.tokens += 1
             player.lastlogin = int(datetime.datetime.today().timestamp())
             player.currentxp += cfg.INTERVAL
             player.totalxp += cfg.INTERVAL
