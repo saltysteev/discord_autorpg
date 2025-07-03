@@ -130,7 +130,7 @@ class User(commands.Cog):
     @app_commands.describe(amount="How many loot tokens to use?")
     async def pull(self, ctx: discord.Interaction, amount: Optional[int]):
         """Uses a loot token to get a random item. Can use be used up to 10 times at once."""
-        player = await Player.objects.get(ctx.user.id)
+        player = await Player.objects.get(uid=ctx.user.id)
         if player.tokens < 1:
             await ctx.response.send_message(
                 "You do not have any loot tokens! You gain one token every 12 hours idling.",
