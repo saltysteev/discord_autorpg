@@ -1,4 +1,5 @@
 import logging
+import random
 from typing import Optional
 
 import discord
@@ -103,21 +104,26 @@ class Admincomms(commands.Cog):
     @app_commands.command()
     @app_commands.default_permissions()
     async def fixusers(self, ctx: discord.Interaction):
-        """Register a new user"""
+        """Fixes or registers all users in the guild, and corrects their current online status"""
         if ctx.user.id not in cfg.SERVER_ADMINS:
             return
         guild = ctx.guild
         if guild:
             for player in guild.members:
                 try:
-                    await Player.objects.get(uid=player.id)
+                    p = await Player.objects.get(uid=player.id)
                 except NoMatch:
                     await Player.objects.create(
                         uid=player.id,
+                        x=random.randint(1, 1000),
+                        y=random.randint(1, 1000),
                         _defaults={"name": player.display_name},
                     )
                 except Exception as e:
                     await Player.objects.get(uid=player.id)
+                finally:
+                    p.status = player.status is not discord.Status.offline
+                    await p.update(_columns=["status"])
             await ctx.response.send_message("Players registered", ephemeral=True)
 
     @app_commands.command()
