@@ -95,28 +95,28 @@ class User(commands.Cog):
         equip_embed = discord.Embed(color=discord.Color(2899536), title="Equipment")
         equip_embed.description = "".join(
             [
-                f"<:arpg_weapon:1178229655887675503> {self.bot.item_string(player.weapon)}\n"
+                f"<:weapon:1390359056836989040> {self.bot.item_string(player.weapon)}\n"
                 if player.weapon
                 else "",
-                f"<:arpg_shield:1178498515631099964> {self.bot.item_string(player.shield)}\n"
+                f"<:shield:1390358010744012870> {self.bot.item_string(player.shield)}\n"
                 if player.shield
                 else "",
-                f"<:arpg_helmet:1178229652460949584> {self.bot.item_string(player.helmet)}\n"
+                f"<:helm:1390357866371616828> {self.bot.item_string(player.helmet)}\n"
                 if player.helmet
                 else "",
-                f"<:arpg_chest:1178229650728689745> {self.bot.item_string(player.chest)}\n"
+                f"<:chest:1390357529296633877> {self.bot.item_string(player.chest)}\n"
                 if player.chest
                 else "",
-                f"<:arpg_gloves:1178229651651432458> {self.bot.item_string(player.gloves)}\n"
+                f"<:gloves:1390357819097878600> {self.bot.item_string(player.gloves)}\n"
                 if player.gloves
                 else "",
-                f"<:arpg_boots:1178229649629794314> {self.bot.item_string(player.boots)}\n"
+                f"<:boots:1390357641653653627> {self.bot.item_string(player.boots)}\n"
                 if player.boots
                 else "",
-                f"<:arpg_ring:1178230072642121771> {self.bot.item_string(player.ring)}\n"
+                f"<:ring:1390357474543931502> {self.bot.item_string(player.ring)}\n"
                 if player.ring
                 else "",
-                f"<:arpg_amulet:1178229648774148177> {self.bot.item_string(player.amulet)}"
+                f"<:amulet:1390357952539660418> {self.bot.item_string(player.amulet)}"
                 if player.amulet
                 else "",
             ]

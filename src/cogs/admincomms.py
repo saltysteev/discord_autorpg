@@ -4,6 +4,7 @@ from typing import Optional
 import discord
 from discord import app_commands
 from discord.ext import commands
+from ormar import NoMatch
 
 import utils.config as cfg
 from bot import AutoBot
@@ -108,10 +109,15 @@ class Admincomms(commands.Cog):
         guild = ctx.guild
         if guild:
             for player in guild.members:
-                await Player.objects.get_or_create(
-                    uid=player.id,
-                    _defaults={"name": player.display_name},
-                )
+                try:
+                    await Player.objects.get(uid=player.id)
+                except NoMatch:
+                    await Player.objects.create(
+                        uid=player.id,
+                        _defaults={"name": player.display_name},
+                    )
+                except Exception as e:
+                    await Player.objects.get(uid=player.id)
             await ctx.response.send_message("Players registered", ephemeral=True)
 
     @app_commands.command()
