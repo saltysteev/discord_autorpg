@@ -123,7 +123,9 @@ class Admincomms(commands.Cog):
                     await Player.objects.get(uid=player.id)
                 finally:
                     p.online = player.status is not discord.Status.offline
-                    await p.update(_columns=["online"])
+                    p.avatar_url = player.display_avatar.url
+                    p.name = player.display_name
+                    await p.update(_columns=["online", "avatar_url", "name"])
             await ctx.response.send_message("Players registered", ephemeral=True)
 
     @app_commands.command()
