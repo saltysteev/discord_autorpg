@@ -166,9 +166,12 @@ async def database_init(members):
     # Database creation if not exists
     basemeta.metadata.create_all(engine)
     for player in members:
-        await Player.objects.get_or_create(
-            uid=player.id,
-            x=random.randint(1, 1000),
-            y=random.randint(1, 1000),
-            _defaults={"name": player.display_name},
-        )
+        try:
+            await Player.objects.get(uid=player.id)
+        except ormar.NoMatch:
+            await Player.objects.create(
+                uid=player.id,
+                _defaults={"name": player.display_name},
+            )
+        except Exception as e:
+            await Player.objects.get(uid=player.id)
