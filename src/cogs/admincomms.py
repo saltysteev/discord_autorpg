@@ -122,10 +122,10 @@ class Admincomms(commands.Cog):
                 except Exception as e:
                     await Player.objects.get(uid=player.id)
                 finally:
-                    print(f"{p.name} {p.avatar_url}")
                     p.online = player.status is not discord.Status.offline
                     p.avatar_url = player.display_avatar.url
                     p.name = player.display_name
+                    print(f"{p.name} {player.display_avatar.url}")
                     await p.update(_columns=["online", "avatar_url", "name"])
             await ctx.response.send_message("Players registered", ephemeral=True)
 
