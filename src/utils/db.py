@@ -173,6 +173,7 @@ async def database_init(members):
                 uid=player.id,
                 x=random.randint(1, MAP_SIZE[0]),
                 y=random.randint(1, MAP_SIZE[1]),
+                avatar_url=player.display_avatar.url,
                 _defaults={"name": player.display_name},
             )
         except Exception as e:
