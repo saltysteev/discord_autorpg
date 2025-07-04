@@ -71,7 +71,7 @@ class AutoBot(commands.Bot):
                 "WARNING: Game channel is not set in config, you will not receive game updates!"
             )
 
-        self.guild = await self.fetch_guild(cfg.GUILD_ID)
+        self.guild: discord.Guild = await self.get_guild(cfg.GUILD_ID)
         self.pcount = await Player.objects.filter(online=True).count()
 
         # Initialize the database

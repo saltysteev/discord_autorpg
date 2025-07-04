@@ -9,7 +9,7 @@ import databases
 import ormar
 import sqlalchemy
 
-from utils.config import DBHOST, DBNAME, DBPASS, DBPORT, DBTYPE, DBUSER, DEBUG
+from utils.config import DBHOST, DBNAME, DBPASS, DBPORT, DBTYPE, DBUSER, DEBUG, MAP_SIZE
 
 DBSTRING = f"{DBTYPE}://{DBUSER}:{DBPASS}@{DBHOST}:{DBPORT}/{DBNAME}"
 
@@ -171,6 +171,8 @@ async def database_init(members):
         except ormar.NoMatch:
             await Player.objects.create(
                 uid=player.id,
+                x=random.randint(1, MAP_SIZE[0]),
+                y=random.randint(1, MAP_SIZE[1]),
                 _defaults={"name": player.display_name},
             )
         except Exception as e:

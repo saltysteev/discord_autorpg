@@ -115,13 +115,14 @@ class Admincomms(commands.Cog):
                 except NoMatch:
                     await Player.objects.create(
                         uid=player.id,
-                        x=random.randint(1, 1000),
-                        y=random.randint(1, 1000),
+                        x=random.randint(1, cfg.MAP_SIZE[0]),
+                        y=random.randint(1, cfg.MAP_SIZE[1]),
                         _defaults={"name": player.display_name},
                     )
                 except Exception as e:
                     await Player.objects.get(uid=player.id)
                 finally:
+                    print(f"{p.name} {p.avatar_url}")
                     p.online = player.status is not discord.Status.offline
                     p.avatar_url = player.display_avatar.url
                     p.name = player.display_name
