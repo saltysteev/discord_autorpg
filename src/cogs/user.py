@@ -46,7 +46,7 @@ class User(commands.Cog):
             else f"This {item[1]} is weaker, so they tossed it away."
         )
         em.set_footer(text=footer)
-        if cfg.ENABLE_COMBAT:
+        if cfg.ENABLE_COMBAT and player.level >= cfg.MIN_CHALLENGE_LEVEL:
             eligible = await Player.objects.exclude(uid=player.uid).all(
                 level__gte=cfg.MIN_CHALLENGE_LEVEL, online=True
             )
