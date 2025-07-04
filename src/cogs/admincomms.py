@@ -108,8 +108,11 @@ class Admincomms(commands.Cog):
         if ctx.user.id not in cfg.SERVER_ADMINS:
             return
         guild = ctx.guild
+        members = (
+            guild.fetch_members()
+        )  # API call to get a refresh of member properties
         if guild:
-            for player in guild.members:
+            for player in members:
                 try:
                     p = await Player.objects.get(uid=player.id)
                 except NoMatch:
@@ -125,7 +128,6 @@ class Admincomms(commands.Cog):
                     p.online = player.status is not discord.Status.offline
                     p.avatar_url = player.display_avatar.url
                     p.name = player.display_name
-                    print(f"{p.name} {player.display_avatar.url}")
                     await p.update(_columns=["online", "avatar_url", "name"])
             await ctx.response.send_message("Players registered", ephemeral=True)
 
