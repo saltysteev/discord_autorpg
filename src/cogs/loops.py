@@ -52,6 +52,8 @@ class Loops(commands.Cog):
                 "loss",
                 "x",
                 "y",
+                "tokens",
+                "nexttoken",
             ],
         )
 
