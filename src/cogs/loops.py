@@ -29,8 +29,9 @@ class Loops(commands.Cog):
             await self.map_cog.mapmove(player)
             if player.currentxp >= player.nextxp:
                 await self.user_cog.levelup(player)
-            if player.totalxp % cfg.TOKEN_TIME < cfg.INTERVAL:
+            if player.lastlogin >= player.nexttoken:
                 player.tokens += 1
+                player.nexttoken += cfg.TOKEN_TIME
             player.lastlogin = int(datetime.datetime.today().timestamp())
             player.currentxp += cfg.INTERVAL
             player.totalxp += cfg.INTERVAL
@@ -52,6 +53,8 @@ class Loops(commands.Cog):
                 "loss",
                 "x",
                 "y",
+                "tokens",
+                "nexttoken",
             ],
         )
 
