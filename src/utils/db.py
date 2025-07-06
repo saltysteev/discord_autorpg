@@ -64,7 +64,7 @@ class Player(ormar.Model):
     optin: bool = ormar.Boolean(default=False)
     avatar_url: str = ormar.Text(default="")
     tokens: int = ormar.Integer(default=0)
-    nexttoken: int = ormar.Integer(default=int(datetime.today().timestamp()))
+    nexttoken: int = ormar.Integer(default=int(datetime.today().timestamp() + 43200))
     weapon: str = ormar.JSON(
         default={
             "name": "Fists",
