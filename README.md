@@ -4,10 +4,15 @@ A discord bot game that players can idle and earn experience/fight monsters/gain
 
 See a live leaderboard, overworld, and more at https://autorpg.deadnet.org
 
-# self-hosted
+# self-hosted installation
 
-- Use pip to install dependencies (discord.py, ormar, uvloop)
-- Edit config.example.py and change configurations.
-  - Important changes to note are bot token, application ID, channel IDs, database info
+- Go to the Discord Developer Portal (https://discord.com/developers/applications)
+  - Create a bot application and generate a token / app ID
+- Use pip to install dependencies (use requirements.txt or install one by one manually)
+- Edit config.example.py and change to your liking.
 - Rename config.example.py to config.py
 - Run bot.py
+
+# self-hosted setup
+- Once bot is running, invite into your Discord server
+- Run the command /fixusers

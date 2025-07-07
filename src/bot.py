@@ -35,7 +35,7 @@ import uvloop
 from discord.ext import commands
 
 from utils import config as cfg
-from utils.db import Player, database, database_init
+from utils.db import Player, database
 
 
 class AutoBot(commands.Bot):
@@ -73,12 +73,6 @@ class AutoBot(commands.Bot):
 
         self.guild = await self.fetch_guild(cfg.GUILD_ID)
         self.pcount = await Player.objects.filter(online=True).count()
-
-        # Initialize the database
-        members = []
-        async for member in self.guild.fetch_members(limit=None):
-            members.append(member)
-        await database_init(members)
 
         logging.info(
             "Game started with %s online players, guild: %s", self.pcount, self.guild

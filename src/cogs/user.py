@@ -79,7 +79,7 @@ class User(commands.Cog):
                 alignment = "Neutral"
         qstring = "not on a quest" if not player.onquest else "on a quest!"
         em = discord.Embed(color=discord.Color(2899536))
-        em.title = f"View {player.name}'s Adventure Profile"
+        em.title = f"{player.name}'s Adventure Profile"
         em.url = f"{cfg.GAME_URL}/profile.php?uid={player.uid}"
         em.set_thumbnail(url=player.avatar_url)
         em.add_field(name="Level", value=player.level)

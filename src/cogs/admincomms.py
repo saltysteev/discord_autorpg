@@ -103,32 +103,33 @@ class Admincomms(commands.Cog):
 
     @app_commands.command()
     @app_commands.default_permissions()
-    async def fixusers(self, ctx: discord.Interaction):
+    async def initialize(self, ctx: discord.Interaction):
         """Fixes or registers all users in the guild, and corrects their current online status"""
         if ctx.user.id not in cfg.SERVER_ADMINS:
             return
         guild = ctx.guild
-        members = (
-            guild.fetch_members()
-        )  # API call to get a refresh of member properties
+        # API call to get a refreshed list of members
+        members = guild.fetch_members()
         if guild:
             for player in members:
                 try:
                     p = await Player.objects.get(uid=player.id)
                 except NoMatch:
-                    await Player.objects.create(
+                    p = await Player.objects.create(
                         uid=player.id,
+                        name=player.display_name,
                         x=random.randint(1, cfg.MAP_SIZE[0]),
                         y=random.randint(1, cfg.MAP_SIZE[1]),
-                        _defaults={"name": player.display_name},
                     )
                 except Exception as e:
-                    await Player.objects.get(uid=player.id)
-                finally:
-                    p.online = player.status is not discord.Status.offline
-                    p.avatar_url = player.display_avatar.url
-                    p.name = player.display_name
-                    await p.update(_columns=["online", "avatar_url", "name"])
+                    await ctx.response.send_message(
+                        f"Error running initialize command: {e}", ephemeral=True
+                    )
+                    return
+                p.online = player.status is not discord.Status.offline
+                p.avatar_url = player.display_avatar.url
+                p.name = player.display_name
+                await p.update(_columns=["online", "avatar_url", "name"])
             await ctx.response.send_message("Players registered", ephemeral=True)
 
     @app_commands.command()

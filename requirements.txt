@@ -1,4 +1,3 @@
 discord.py
-aiomysql
-ormar
+ormar[mysql]
 uvloop

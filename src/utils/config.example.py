@@ -2,26 +2,40 @@
 config.py
 """
 
-# Debug switch, changes the database to a fallback mode
-DEBUG = False
+#
+#   REQUIRED CONFIGURATIONS
+#
 # Game version
-VERSION = "3.4.0"
-
-# Game info - displayed when a player uses /info
+VERSION = "3.5.0"
+# Game info - displayed when a player uses /info. Uses Discord markdown formatting
 GAME_INFO = f"```AutoRPG (v{VERSION}) - by steev | https://autorpg.deadnet.org/```"
-# Game website URL - also used in a player's profile link. Do not use a trailing slash!
+# Game website URL - also used in a player's profile link. WARNING: Do not use a trailing slash!
 GAME_URL = "https://autorpg.deadnet.org"
-
 # Guild ID, grabbed from Discord
 GUILD_ID = 0
 # The unique Discord token
-DISCORD_TOKEN = "token here"
+DISCORD_TOKEN = "TOKEN_HERE"
 # Discord application ID, grabbed from Discord
 APPLICATION_ID = 0
 # List of discord user ID's separated by a comma who have access to admin commands
 SERVER_ADMINS = [261960455369523201]
 # Main game channel ID that posts all player level ups/events/etc
 GAME_CHANNEL = 0
+# Database configuration
+# DBTYPE must match your database type and async (postgres, sqlite, etc)
+# See https://collerek.github.io/ormar/latest/install/#database-backend for more informatoin
+DBTYPE = "mysql+aiomysql"
+DBUSER = "user"
+DBPASS = "pass"
+DBHOST = "localhost"
+DBPORT = 3306
+DBNAME = "autorpg"
+
+#
+#   OPTIONAL CONFIGURATIONS
+#
+# Debug switch, changes the database to a fallback mode
+DEBUG = False
 # The interval in which the game loops (in seconds)
 INTERVAL = 5
 # The base time to level in seconds, 600 seconds = 10 minutes (base * (exp ** current level))
@@ -57,7 +71,7 @@ TOKEN_TIME = 43200  # 12 hours
 # HOLIDAY_LIST is a list of the names of the holidays. This also tells the bot what folder the events are in
 # For example, if Christmas is selected, it reads ./txtfiles/christmas/
 # This is for when you want to make custom holidays - just make sure the folder names match what's in the list
-# 0 = None
+# 0 = Normal / no holiday
 # 1 = Christmas
 # 2 = Halloween
 HOLIDAY = 0
@@ -72,6 +86,7 @@ COLOR_LEVELUP = 0xFFE100
 COLOR_EVENT = 0xFFFFFF
 COLOR_MONSTER = 0x000000
 COLOR_QUEST = 0x49AA2C
+COLOR_LOOT = 0xA000FF
 
 # Tips
 TIPS = [
@@ -85,11 +100,3 @@ TIPS = [
     "Item rarity affect the power of that item, and makes you stronger (or weaker) in duels!",
     "While you may have a shiny Legendary weapon, it will eventually be replaced. New item drops scale with your own level!",
 ]
-
-# Database Config
-DBTYPE = "mysql+aiomysql"
-DBUSER = "user"
-DBPASS = "pass"
-DBHOST = "localhost"
-DBPORT = 3306
-DBNAME = "autorpg"
