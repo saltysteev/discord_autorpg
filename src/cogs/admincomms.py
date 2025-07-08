@@ -108,27 +108,29 @@ class Admincomms(commands.Cog):
         if ctx.user.id not in cfg.SERVER_ADMINS:
             return
         guild = ctx.guild
-        # API call to get a refreshed list of members
+        members = [player async for player in guild.fetch_members()]
         if guild:
-            async for player in guild.fetch_members():
+            for member in members:
+                status = member.status is not discord.Status.offline
                 try:
-                    p = await Player.objects.get(uid=player.id)
+                    player = await Player.objects.get(uid=member.id)
+                    if (
+                        player.online != status
+                        or player.avatar_url != member.display_avatar.url
+                        or player.name != member.display_name
+                    ):
+                        player.online = status
+                        player.avatar_url = member.display_avatar.url
+                        player.name = member.display_name
+                        await player.update(_columns=["online", "avatar_url", "name"])
+
                 except NoMatch:
-                    p = await Player.objects.create(
-                        uid=player.id,
-                        name=player.display_name,
-                        x=random.randint(1, cfg.MAP_SIZE[0]),
-                        y=random.randint(1, cfg.MAP_SIZE[1]),
+                    player = await Player.objects.create(
+                        uid=member.id,
+                        online=status,
+                        avatar_url=member.display_avatar.url,
+                        name=member.display_name,
                     )
-                except Exception as e:
-                    await ctx.response.send_message(
-                        f"Error running initialize command: {e}", ephemeral=True
-                    )
-                    return
-                p.online = player.status is not discord.Status.offline
-                p.avatar_url = player.display_avatar.url
-                p.name = player.display_name
-                await p.update(_columns=["online", "avatar_url", "name"])
             await ctx.response.send_message("Players registered", ephemeral=True)
 
     @app_commands.command()
