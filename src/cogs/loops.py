@@ -20,6 +20,7 @@ class Loops(commands.Cog):
         self.bot = bot
         self.main_loop.start()
         self.quest_check.start()
+        self.token_reward.start()
 
     @tasks.loop(seconds=cfg.INTERVAL)
     async def main_loop(self):
