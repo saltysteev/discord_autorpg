@@ -129,7 +129,7 @@ class User(commands.Cog):
 
     @app_commands.command()
     @app_commands.describe(amount="How many loot tokens to use?")
-    async def pull(self, ctx: discord.Interaction, amount: Optional[int]):
+    async def pull(self, ctx: discord.Interaction, amount: Optional[int] = 1):
         """Uses a loot token to get a random item. Can use be used up to 10 times at once."""
         player = await Player.objects.get(uid=ctx.user.id)
         if player.tokens < 1:
