@@ -15,4 +15,8 @@ See a live leaderboard, overworld, and more at https://autorpg.deadnet.org
 
 # self-hosted setup
 - Once bot is running, invite into your Discord server
-- Run the command /fixusers
+- The bot should automatically register everyone in the server and start playing
+  - If not, use the command /initialize to fix the usercount. This command does NOT reset progress.
+- The bot should also create the item rarity server roles to provide a bit of flair to items.
+  - If not, use the command /createroles
+- See admincomms.py for a list of commands the server admin can use

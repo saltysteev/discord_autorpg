@@ -6,6 +6,10 @@ author: steev @ https://deadnet.org
 special thanks through QA, testing, and security:
 halfvoid, morrakiu, FixySLN, Welshnutter, Parzi, and many more
 
+This entire mess is heavily uncommented code, proceed with caution :)
+
+
+===========================
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
 the Software without restriction, including without limitation the rights to
@@ -50,7 +54,7 @@ class AutoBot(commands.Bot):
         self.pcount = 0
 
     async def setup_hook(self) -> None:
-        logging.info("Starting bot - AutoRPG v%s", cfg.VERSION)
+        logging.info("Starting bot - %s v%s", cfg.GAME_NAME, cfg.VERSION)
 
         # Load all the cogs from the cogs folder
         for ext in self.initial_ext:
@@ -66,9 +70,10 @@ class AutoBot(commands.Bot):
     async def on_ready(self):
         """Once setup_hook has finished and bot is ready"""
         self.channel = self.get_channel(cfg.GAME_CHANNEL)
-        if cfg.GAME_CHANNEL == 0:
-            logging.info(
-                "WARNING: Game channel is not set in config, you will not receive game updates!"
+        self.announce_channel = self.get_channel(cfg.ANNOUNCE_CHANNEL)
+        if not self.channel or not self.announce_channel:
+            logging.warning(
+                "Invalid GAME_CHANNEL or ANNOUNCE_CHANNEL detected in config: you will not receive game updates!"
             )
 
         self.guild = await self.fetch_guild(cfg.GUILD_ID)
@@ -152,10 +157,12 @@ class AutoBot(commands.Bot):
             uid=ctx.id,
             _defaults={"name": ctx.display_name},
         )
+        logging.info("New player joined and registered: %s", ctx.display_name)
 
     async def on_member_remove(self, ctx: discord.Member):
         """When a member leaves the server, set them to offline, so they do not continue to gather experience"""
         await Player.objects.filter(uid=ctx.id).update(online=False)
+        logging.info("Player left the server: %s", ctx.display_name)
 
     async def on_presence_update(self, _, after: discord.Member):
         """When a member goes offline, change their database status to offline"""
@@ -177,7 +184,6 @@ class AutoBot(commands.Bot):
                 _defaults={"name": player.display_name},
             )
         logging.info("Bot joined in guild: %s", guild.name)
-        logging.info("Created item rarity roles and registered players")
 
 
 async def main():
@@ -209,7 +215,7 @@ async def main():
             try:
                 await bot.start(token)
             except discord.DiscordException as e:
-                logging.error("Bot failed to start: %s", e)
+                logging.error("Bot failed to start", exc_info=e)
             except KeyboardInterrupt:
                 await database.disconnect()
                 await bot.close()

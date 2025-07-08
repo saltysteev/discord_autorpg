@@ -5,7 +5,6 @@ from typing import Optional
 import discord
 from discord import app_commands
 from discord.ext import commands
-from ormar import NoMatch
 
 import utils.config as cfg
 from bot import AutoBot
@@ -59,7 +58,7 @@ class Admincomms(commands.Cog):
     async def dropitem(
         self, ctx: discord.Interaction, member: Optional[discord.Member]
     ):
-        """Spawns a new quest with random participants"""
+        """Drops a random item for a player"""
         if ctx.user.id not in cfg.SERVER_ADMINS:
             return
         player = await Player.objects.get_or_none(

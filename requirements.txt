@@ -1,3 +1,5 @@
-discord.py
-ormar[mysql]
+discord
+ormar[orjson]
+aiomysql
+pymysql
 uvloop

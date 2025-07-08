@@ -29,7 +29,7 @@ class Listeners(commands.Cog):
             value="Generates a link to view your stats. You can also look at another player's stats using /profile @name",
         )
         embed.add_field(
-            name="/setclass <class>",
+            name="/job <class>",
             value="After level 10 you can change your class. This is purely cosmetic and shows on your profile",
         )
         embed.add_field(

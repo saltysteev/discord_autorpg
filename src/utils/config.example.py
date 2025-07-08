@@ -5,6 +5,8 @@ config.py
 #
 #   REQUIRED CONFIGURATIONS
 #
+# Game name
+GAME_NAME = "AutoRPG"
 # Game version
 VERSION = "3.5.0"
 # Game info - displayed when a player uses /info. Uses Discord markdown formatting
@@ -21,6 +23,8 @@ APPLICATION_ID = 0
 SERVER_ADMINS = [261960455369523201]
 # Main game channel ID that posts all player level ups/events/etc
 GAME_CHANNEL = 0
+# Channel ID for misc activies like quests, raids, etc
+ANNOUNCE_CHANNEL = 0
 # Database configuration
 # DBTYPE must match your database type and async (postgres, sqlite, etc)
 # See https://collerek.github.io/ormar/latest/install/#database-backend for more informatoin

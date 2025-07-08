@@ -31,13 +31,13 @@ class Jobs(commands.Cog):
             return
         if not arg:
             await ctx.response.send_message(
-                "You cannot have an empty class. /job <class>.",
+                "You cannot have an empty class. Use /job <class>.",
                 ephemeral=True,
             )
             return
         if not all(x.isalpha() or x.isspace() for x in arg):
             await ctx.response.send_message(
-                "Class names can only contain letters.", ephemeral=True
+                "Class names can only contain letters and spaces.", ephemeral=True
             )
             return
 
