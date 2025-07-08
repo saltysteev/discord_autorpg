@@ -109,13 +109,14 @@ class Admincomms(commands.Cog):
             return
         guild = ctx.guild
         async for member in guild.fetch_members():
+            status = member.status is not discord.Status.offline
             await Player.objects.update_or_create(
                 uid=member.id,
                 name=member.display_name,
                 x=random.randint(0, cfg.MAP_SIZE - 1),
                 y=random.randint(0, cfg.MAP_SIZE - 1),
                 avatar_url=member.display_avatar.url,
-                online=member.status is not discord.Status.offline,
+                online=status,
             )
         await ctx.response.send_message("Players registered", ephemeral=True)
 
