@@ -108,7 +108,7 @@ class Admincomms(commands.Cog):
         if ctx.user.id not in cfg.SERVER_ADMINS:
             return
         guild = ctx.guild
-        async for member in guild.fetch_members():
+        for member in guild.members:
             status = member.status is not discord.Status.offline
             await Player.objects.update_or_create(
                 uid=member.id,
