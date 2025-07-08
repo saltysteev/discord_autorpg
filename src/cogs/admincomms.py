@@ -109,9 +109,8 @@ class Admincomms(commands.Cog):
             return
         guild = ctx.guild
         # API call to get a refreshed list of members
-        members = await guild.fetch_members()
         if guild:
-            for player in members:
+            async for player in guild.fetch_members():
                 try:
                     p = await Player.objects.get(uid=player.id)
                 except NoMatch:
