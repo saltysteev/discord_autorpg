@@ -85,6 +85,7 @@ class User(commands.Cog):
         em.add_field(name="Level", value=player.level)
         em.add_field(name="Class", value=player.job)
         em.add_field(name="Alignment", value=alignment)
+        em.add_field(name="Tokens", value=player.tokens)
         em.add_field(
             name="Next Level",
             value=self.bot.ctime(nextlevel),
