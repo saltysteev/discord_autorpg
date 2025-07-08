@@ -109,7 +109,7 @@ class Admincomms(commands.Cog):
             return
         guild = ctx.guild
         # API call to get a refreshed list of members
-        members = guild.fetch_members()
+        members = await guild.fetch_members()
         if guild:
             for player in members:
                 try:
