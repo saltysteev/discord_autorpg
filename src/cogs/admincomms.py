@@ -109,18 +109,14 @@ class Admincomms(commands.Cog):
             return
         guild = ctx.guild
         async for member in guild.fetch_members():
-            await Player.objects.get_or_create(
+            await Player.objects.update_or_create(
                 uid=member.id,
-                defaults={
-                    "name": member.display_name,
-                },
+                name=member.display_name,
+                x=random.randint(0, cfg.MAP_SIZE - 1),
+                y=random.randint(0, cfg.MAP_SIZE - 1),
+                avatar_url=member.display_avatar.url,
+                online=member.status is not discord.Status.offline,
             )
-        players = await Player.objects.all()
-        for p in players:
-            p.online = member.status is not discord.Status.offline
-            p.avatar_url = member.display_avatar.url
-            p.name = member.display_name
-        await Player.objects.bulk_update(players, ["online", "avatar_url", "name"])
         await ctx.response.send_message("Players registered", ephemeral=True)
 
     @app_commands.command()
