@@ -56,7 +56,7 @@ class Loops(commands.Cog):
                 ],
             )
 
-    @tasks.loop(hours=cfg.TOKEN_INTERVAL)
+    @tasks.loop(hours=cfg.TOKEN_TIME)
     async def token_reward(self):
         """Loop timer that runs token logic"""
         players = await Player.objects.all(online=True)
