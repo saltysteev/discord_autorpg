@@ -113,8 +113,8 @@ class Admincomms(commands.Cog):
             await Player.objects.update_or_create(
                 uid=member.id,
                 name=member.display_name,
-                x=random.randint(0, cfg.MAP_SIZE - 1),
-                y=random.randint(0, cfg.MAP_SIZE - 1),
+                x=random.randint(0, cfg.MAP_SIZE[0]),
+                y=random.randint(0, cfg.MAP_SIZE[1]),
                 avatar_url=member.display_avatar.url,
                 online=status,
             )
