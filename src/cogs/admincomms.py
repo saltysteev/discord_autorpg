@@ -108,30 +108,20 @@ class Admincomms(commands.Cog):
         if ctx.user.id not in cfg.SERVER_ADMINS:
             return
         guild = ctx.guild
-        members = [player async for player in guild.fetch_members()]
-        if guild:
-            for member in members:
-                status = member.status is not discord.Status.offline
-                try:
-                    player = await Player.objects.get(uid=member.id)
-                    if (
-                        player.online != status
-                        or player.avatar_url != member.display_avatar.url
-                        or player.name != member.display_name
-                    ):
-                        player.online = status
-                        player.avatar_url = member.display_avatar.url
-                        player.name = member.display_name
-                        await player.update(_columns=["online", "avatar_url", "name"])
-
-                except NoMatch:
-                    player = await Player.objects.create(
-                        uid=member.id,
-                        online=status,
-                        avatar_url=member.display_avatar.url,
-                        name=member.display_name,
-                    )
-            await ctx.response.send_message("Players registered", ephemeral=True)
+        async for member in guild.fetch_members():
+            await Player.objects.get_or_create(
+                uid=member.id,
+                defaults={
+                    "name": member.display_name,
+                },
+            )
+        players = await Player.objects.all()
+        for p in players:
+            p.online = member.status is not discord.Status.offline
+            p.avatar_url = member.display_avatar.url
+            p.name = member.display_name
+        await Player.objects.bulk_update(players, ["online", "avatar_url", "name"])
+        await ctx.response.send_message("Players registered", ephemeral=True)
 
     @app_commands.command()
     @app_commands.default_permissions()
