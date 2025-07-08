@@ -25,36 +25,37 @@ class Loops(commands.Cog):
     async def main_loop(self):
         """Loop timer that runs game logic on all online players"""
         players = await Player.objects.all(online=True)
-        for player in players:
-            await self.map_cog.mapmove(player)
-            if player.currentxp >= player.nextxp:
-                await self.user_cog.levelup(player)
-            if player.totalxp % cfg.TOKEN_TIME < cfg.INTERVAL:
-                player.tokens += 1
-            player.lastlogin = int(datetime.datetime.today().timestamp())
-            player.currentxp += cfg.INTERVAL
-            player.totalxp += cfg.INTERVAL
-        if random.randint(1, 4 * 86400) / cfg.INTERVAL < len(players):
-            await self.event_cog.randomevent(random.choice(players))
-        if random.randint(1, 8 * 86400) / cfg.INTERVAL < len(players):
-            await self.mon_cog.encounter(random.choice(players))
+        if players:
+            for player in players:
+                await self.map_cog.mapmove(player)
+                if player.currentxp >= player.nextxp:
+                    await self.user_cog.levelup(player)
+                if player.totalxp % cfg.TOKEN_TIME < cfg.INTERVAL:
+                    player.tokens += 1
+                player.lastlogin = int(datetime.datetime.today().timestamp())
+                player.currentxp += cfg.INTERVAL
+                player.totalxp += cfg.INTERVAL
+            if random.randint(1, 4 * 86400) / cfg.INTERVAL < len(players):
+                await self.event_cog.randomevent(random.choice(players))
+            if random.randint(1, 8 * 86400) / cfg.INTERVAL < len(players):
+                await self.mon_cog.encounter(random.choice(players))
 
-        await Player.objects.bulk_update(
-            players,
-            columns=[
-                "level",
-                "nextxp",
-                "totalxplost",
-                "currentxp",
-                "totalxp",
-                "lastlogin",
-                "wins",
-                "loss",
-                "x",
-                "y",
-                "tokens",
-            ],
-        )
+            await Player.objects.bulk_update(
+                players,
+                columns=[
+                    "level",
+                    "nextxp",
+                    "totalxplost",
+                    "currentxp",
+                    "totalxp",
+                    "lastlogin",
+                    "wins",
+                    "loss",
+                    "x",
+                    "y",
+                    "tokens",
+                ],
+            )
 
     @tasks.loop(minutes=cfg.INTERVAL)
     async def quest_check(self):
