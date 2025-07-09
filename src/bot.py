@@ -77,6 +77,8 @@ class AutoBot(commands.Bot):
             )
 
         self.guild = await self.fetch_guild(cfg.GUILD_ID)
+        if not self.guild:
+            logging.warning("Guild not found")
         self.pcount = await Player.objects.filter(online=True).count()
 
         logging.info(
