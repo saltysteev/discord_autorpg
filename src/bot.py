@@ -76,7 +76,7 @@ class AutoBot(commands.Bot):
                 "Invalid GAME_CHANNEL or ANNOUNCE_CHANNEL detected in config: you will not receive game updates!"
             )
 
-        self.guild = await self.fetch_guild(cfg.GUILD_ID)
+        self.guild = self.get_guild(cfg.GUILD_ID)
         if not self.guild:
             logging.warning("Guild not found")
         self.pcount = await Player.objects.filter(online=True).count()
