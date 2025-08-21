@@ -35,7 +35,6 @@ from pathlib import Path
 from typing import List, Optional
 
 import discord
-from discord import TextChannel
 from discord.ext import commands
 
 from utils import config as cfg
@@ -125,8 +124,24 @@ class AutoBot(commands.Bot):
         Check the current guild roles for item drops and make sure they're set to the correct colors.
         Call this if the roles ever get deleted or out of sync
         """
-        rarity_roles = ["Common", "Uncommon", "Rare", "Epic", "Legendary", "Ascended", "Unique"]
-        color_codes = [0xFFFFFF, 0x2ECC71, 0x3498DB, 0x9B59B6, 0xE67E22, 0xFF1317, 0xFFDF00]
+        rarity_roles = [
+            "Common",
+            "Uncommon",
+            "Rare",
+            "Epic",
+            "Legendary",
+            "Ascended",
+            "Unique",
+        ]
+        color_codes = [
+            0xFFFFFF,
+            0x2ECC71,
+            0x3498DB,
+            0x9B59B6,
+            0xE67E22,
+            0xFF1317,
+            0xFFDF00,
+        ]
         role_ids = []
         for name, color in zip(rarity_roles, color_codes):
             role = discord.utils.get(g.roles, name=name)
@@ -227,11 +242,13 @@ async def main():
 
 if __name__ == "__main__":
     try:
-        import uvloop
+        import uvloop  # pyright: ignore[reportMissingImports]
+
         uvloop.run(main())
     except ImportError:
         # Fallback to asyncio if ran on Windows OS
         import asyncio
+
         asyncio.run(main())
     except KeyboardInterrupt:
         pass

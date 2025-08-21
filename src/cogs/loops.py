@@ -31,8 +31,6 @@ class Loops(commands.Cog):
                 await self.map_cog.mapmove(player)
                 if player.currentxp >= player.nextxp:
                     await self.user_cog.levelup(player)
-                if player.totalxp % cfg.TOKEN_TIME < cfg.INTERVAL:
-                    player.tokens += 1
                 player.lastlogin = int(datetime.datetime.today().timestamp())
                 player.currentxp += cfg.INTERVAL
                 player.totalxp += cfg.INTERVAL
@@ -66,7 +64,7 @@ class Loops(commands.Cog):
                 player.tokens += 1
             await Player.objects.bulk_update(players, columns=["tokens"])
 
-    @tasks.loop(minutes=cfg.INTERVAL)
+    @tasks.loop(seconds=cfg.INTERVAL)
     async def quest_check(self):
         """Loop timer that runs quest logic"""
         try:
