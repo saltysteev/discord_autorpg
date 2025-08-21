@@ -128,6 +128,29 @@ class Admincomms(commands.Cog):
         await self.bot.createroles(ctx.guild)
         await ctx.response.send_message("Roles created", ephemeral=True)
 
+    @app_commands.command()
+    @app_commands.default_permissions()
+    async def givetoken(
+        self,
+        ctx: discord.Interaction,
+        member: Optional[discord.Member],
+        amount: int = 1,
+    ):
+        """Provides a loot token to a player"""
+        if ctx.user.id not in cfg.SERVER_ADMINS:
+            return
+        player = await Player.objects.get_or_none(
+            uid=member.id if member else ctx.user.id
+        )
+        if not player:
+            await ctx.response.send_message("Player not found", ephemeral=True)
+        else:
+            player.tokens += amount
+            await player.update(_columns=["tokens"])
+            await ctx.response.send_message(
+                f"Provided {member.name} with {amount} tokens", ephemeral=True
+            )
+
 
 async def setup(bot):
     await bot.add_cog(Admincomms(bot))
