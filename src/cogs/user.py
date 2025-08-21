@@ -155,20 +155,12 @@ class User(commands.Cog):
             color=discord.Color(cfg.COLOR_LOOT),
         )
         embed.set_thumbnail(url=ctx.user.display_avatar.url)
+        embed.description = ""
         for _ in range(amount):
             item = await get_item(player)
-            if item[2]:
-                embed.add_field(
-                    name=f"You found a new {item[1]}, stronger item and equipped it!",
-                    value=self.bot.item_string(item[0]),
-                    inline=False,
-                )
-            else:
-                embed.add_field(
-                    name=f"You found a new {item[1]}, but it was weaker than your current one.",
-                    value=self.bot.item_string(item[0]),
-                    inline=False,
-                )
+            embed.description += (
+                f"{self.bot.item_string(item[0])}{':new:' if item[2] else ''}\n"
+            )
         await ctx.response.send_message(embed=embed)
         player.tokens -= amount
         await player.update(_columns=["tokens"])
