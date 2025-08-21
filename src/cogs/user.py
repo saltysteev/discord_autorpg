@@ -158,7 +158,7 @@ class User(commands.Cog):
         embed.description = ""
         for _ in range(amount):
             item = await get_item(player)
-            embed.description += f"{self.bot.item_string(item[0])}{':upgrade:1408143066426118234' if item[2] else ''}\n"
+            embed.description += f"{self.bot.item_string(item[0])}{'<:upgrade:1408143066426118234>' if item[2] else ''}\n"
         await ctx.response.send_message(embed=embed)
         player.tokens -= amount
         await player.update(_columns=["tokens"])
