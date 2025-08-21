@@ -35,7 +35,7 @@ from pathlib import Path
 from typing import List, Optional
 
 import discord
-import uvloop
+from discord import TextChannel
 from discord.ext import commands
 
 from utils import config as cfg
@@ -51,7 +51,10 @@ class AutoBot(commands.Bot):
 
         # configuration
         self.initial_ext = initial_ext
-        self.pcount = 0
+        self.pcount: int = 0
+        self.channel = None
+        self.announce_channel = None
+        self.guild = None
 
     async def setup_hook(self) -> None:
         logging.info("Starting bot - %s v%s", cfg.GAME_NAME, cfg.VERSION)
@@ -106,16 +109,15 @@ class AutoBot(commands.Bot):
         return ", ".join(result)
 
     def item_string(self, item) -> Optional[str]:
-        if self.guild is None:
-            return
-
         item_role = discord.utils.get(self.guild.roles, name=item["rank"])
-        if item_role is not None:
+        if item_role:
             return (
                 f"<@&{item_role.id}> {item['quality']} {item['prefix']}{item['name']}{item['suffix']} ({item['condition']}) ({item['dps']})"
                 if not item["flair"]
                 else f"<@&{item_role.id}> {item['quality']} {item['prefix']}{item['name']}{item['suffix']} ({item['condition']}) ({item['dps']})\n> *{item['flair']}*"
             )
+        logging.warning("Check item roles in Discord for proper setup")
+        return None
 
     @staticmethod
     async def createroles(g: discord.Guild) -> None:
@@ -123,8 +125,8 @@ class AutoBot(commands.Bot):
         Check the current guild roles for item drops and make sure they're set to the correct colors.
         Call this if the roles ever get deleted or out of sync
         """
-        rarity_roles = ["Common", "Uncommon", "Rare", "Epic", "Legendary", "Ascended"]
-        color_codes = [0xFFFFFF, 0x2ECC71, 0x3498DB, 0x9B59B6, 0xE67E22, 0xFF1317]
+        rarity_roles = ["Common", "Uncommon", "Rare", "Epic", "Legendary", "Ascended", "Unique"]
+        color_codes = [0xFFFFFF, 0x2ECC71, 0x3498DB, 0x9B59B6, 0xE67E22, 0xFF1317, 0xFFDF00]
         role_ids = []
         for name, color in zip(rarity_roles, color_codes):
             role = discord.utils.get(g.roles, name=name)
@@ -225,6 +227,11 @@ async def main():
 
 if __name__ == "__main__":
     try:
+        import uvloop
         uvloop.run(main())
+    except ImportError:
+        # Fallback to asyncio if ran on Windows OS
+        import asyncio
+        asyncio.run(main())
     except KeyboardInterrupt:
         pass
