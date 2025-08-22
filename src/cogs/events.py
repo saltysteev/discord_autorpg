@@ -35,7 +35,7 @@ class Events(commands.Cog):
             if player.nextxp - player.currentxp < 0:
                 player.nextxp = player.currentxp + 1
             event = random.choice(self.bot.readfile("gevents"))
-            em.title = f":zap: {player.name} {event}!"
+            em.title = s.NORM_EVENT_TITLE % (player.name, event)
             em.add_field(
                 name="",
                 value=s.NEW_EVENT
@@ -49,7 +49,7 @@ class Events(commands.Cog):
             player.nextxp += val
             player.totalxplost += val
             event = random.choice(self.bot.readfile("bevents"))
-            em.title = f":zap: {player.name} {event}!"
+            em.title = s.NORM_EVENT_TITLE % (player.name, event)
             em.add_field(
                 name="",
                 value=s.BAD_EVENT
@@ -64,9 +64,7 @@ class Events(commands.Cog):
             player.nextxp -= val
             if player.nextxp - player.currentxp < 0:
                 player.nextxp = player.currentxp + 1
-            em.title = (
-                f":zap: Blessed! {player.name} has been touched by the Hand of Law!"
-            )
+            em.title = s.HOG_EVENT_TITLE % player.name
             em.add_field(
                 name="",
                 value=s.HOG_EVENT

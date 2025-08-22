@@ -7,6 +7,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from bot import AutoBot
+from utils.config import GAME_INFO
 from utils.db import Player
 
 
@@ -63,6 +64,14 @@ class Listeners(commands.Cog):
             ephemeral=True,
         )
         await player.update(_columns=["optin"])
+
+    @app_commands.command()
+    async def info(self, interaction: discord.Interaction):
+        """Displays basic bot information"""
+        await interaction.response.send_message(
+            GAME_INFO,
+            ephemeral=True,
+        )
 
 
 async def setup(bot):

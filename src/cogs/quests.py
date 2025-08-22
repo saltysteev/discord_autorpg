@@ -10,6 +10,7 @@ from discord import app_commands
 from discord.ext import commands
 
 import utils.config as cfg
+import utils.strings as s
 from bot import AutoBot
 from utils.db import Player, Quest
 
@@ -52,13 +53,11 @@ class Quests(commands.Cog):
             currentxp=0,
             deadline=qid + 86400,
         )
-        embed = discord.Embed(
-            color=discord.Color(cfg.COLOR_QUEST),
-            title=":park: A new quest has been placed on the notice board!",
-        )
+        embed = discord.Embed(color=discord.Color(cfg.COLOR_QUEST), title=s.NEW_QUEST)
         embed.add_field(
             name="",
-            value=f"{self.return_questers(questers)} have been graciously chosen by the sentient Beings to {goal}.\nThey have **24 hours** to complete their journey which will take **{self.bot.ctime(endxp)}** collectively.",
+            value=s.QUESTERS
+            % (self.return_questers(questers), goal, self.bot.ctime(endxp)),
         )
         if self.bot.announce_channel:
             await self.bot.announce_channel.send(" ".join(quester_pings), embed=embed)
@@ -84,16 +83,16 @@ class Quests(commands.Cog):
         await Quest.objects.delete(qid=quest.qid)
         embed = discord.Embed(color=discord.Color(cfg.COLOR_QUEST))
         if win:
-            embed.title = f":park: Rejoice! {quest.players} have reached their destinations **completing their quest!**"
+            embed.title = s.QUEST_WIN[0] % quest.players
             embed.add_field(
                 name="",
-                value="They spread their plunder throughout the realm, boosting everyone's clock **10% towards the next level!**",
+                value=s.QUEST_WIN[1],
             )
         elif not win:
-            embed.title = f":park: {quest.players} have **failed in their quest** and bring down the wrath of Gods upon the realm!"
+            embed.title = s.QUEST_LOSE[0] % quest.players
             embed.add_field(
                 name="",
-                value="They are displeased, slowing everyone's clock **5% towards the next level!**",
+                value=s.QUEST_LOSE[1],
             )
         if self.bot.announce_channel:
             await self.bot.announce_channel.send(" ".join(quester_pings), embed=embed)
@@ -103,16 +102,13 @@ class Quests(commands.Cog):
         """Shows the current realm quest status"""
         quest = await Quest.objects.get_or_none()
         if not quest:
-            await ctx.response.send_message(
-                "```There currently are no adventurers in this guild on a quest.```"
-            )
+            await ctx.response.send_message(s.NO_QUEST)
         else:
             embed = discord.Embed(color=discord.Color(cfg.COLOR_QUEST))
-            embed.title = f":park: Quest status for {ctx.guild}"
+            embed.title = s.QUEST_STATUS_TITLE % ctx.guild.name
             embed.add_field(
                 name="",
-                value=f"{quest.players} are on the blessed path to {quest.goal} and will reach their destination in **{self.bot.ctime(quest.endxp - quest.currentxp)}** collectively.\n"
-                f"They have **{self.bot.ctime(quest.deadline - int(datetime.now().timestamp()))}** remaining to appease the gods.\n",
+                value=f"{s.QUEST_INFO[0] % (quest.players, quest.goal, self.bot.ctime(quest.endxp - quest.currentxp))}\n{s.QUEST_INFO[1] % self.bot.ctime(quest.deadline - int(datetime.now().timestamp()))}",
             )
             await ctx.response.send_message(embed=embed)
 

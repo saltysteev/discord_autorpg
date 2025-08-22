@@ -8,18 +8,9 @@ from typing import Optional
 from discord.ext import commands
 
 from bot import AutoBot
+from utils import config as cfg
+from utils import strings as s
 from utils.db import Player
-
-weapon_slots = [
-    "weapon",
-    "shield",
-    "helmet",
-    "chest",
-    "gloves",
-    "boots",
-    "ring",
-    "amulet",
-]
 
 
 class Challenge(commands.Cog):
@@ -63,7 +54,8 @@ class Challenge(commands.Cog):
         player_val = random.randint(1, player_max)
         opp_val = random.randint(1, opp_max)
         if player_val >= opp_val:
-            swapped_slot: str = random.choice(weapon_slots)
+            swapped_slot: str = random.choice(cfg.WEAPON_SLOTS)
+            challenge_text = s.CHALLENGE_WIN
             if all(
                 [
                     player.align == 2,
@@ -75,30 +67,32 @@ class Challenge(commands.Cog):
                 temp = getattr(player, swapped_slot)
                 setattr(player, swapped_slot, getattr(opp, swapped_slot))
                 setattr(opp, swapped_slot, temp)
-                cstring = (
-                    f"{player.name} ({player_val}/{player_max}) has challenged {opp.name} ({opp_val}/{opp_max}) and was victorious in battle!\n"
-                    f"Because of their evil nature, {player.name} swapped their {swapped_slot} with {opp.name}'s!\n"
-                    f"Their time to next level has been accelerated by **{self.bot.ctime(nextval)}**!"
+                challenge_text += s.CHALLENGE_SWAP % (
+                    player.name,
+                    swapped_slot,
+                    opp.name,
                 )
-                player.nextxp -= nextval
-                player.wins += 1
-            else:
-                cstring = (
-                    f"{player.name} ({player_val}/{player_max}) has challenged {opp.name} ({opp_val}/{opp_max}) and was victorious in battle!\n"
-                    f"Their time to next level has been accelerated by **{self.bot.ctime(nextval)}**!"
-                )
-                player.nextxp -= nextval
-                player.wins += 1
+            player.nextxp -= nextval
+            player.wins += 1
         else:
-            cstring = (
-                f"{player.name} ({player_val}/{player_max}) has challenged {opp.name} ({opp_val}/{opp_max}) and honorably lost in battle.\n"
-                f"Their time to next level has been slowed by **{self.bot.ctime(nextval)}**."
-            )
+            challenge_text = s.CHALLENGE_LOSE
             player.nextxp += nextval
             player.totalxplost += nextval
             player.loss += 1
+        cstring = (
+            challenge_text
+            % (
+                player.name,
+                player_val,
+                player_max,
+                opp.name,
+                opp_val,
+                opp_max,
+                self.bot.ctime(nextval),
+            ),
+        )
         if backstab_chance:
-            cstring += f"\n{player.name} used **dirty tactics** during this fight and **backstabbed** {opp.name}!"
+            cstring += f"\n{s.CHALLENGE_BACKSTAB % (player.name, opp.name)}"
         return cstring
 
 

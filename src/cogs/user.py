@@ -50,9 +50,7 @@ class User(commands.Cog):
             if eligible:
                 challenge = self.bot.get_cog("Challenge")
                 cstring = await challenge.challenge_opp(player, random.choice(eligible))
-                em.add_field(
-                    name=":crossed_swords: Challenge!", value=cstring, inline=False
-                )
+                em.add_field(name=s.CHALLENGE_TITLE, value=cstring, inline=False)
         if self.bot.channel:
             if player.optin:
                 await self.bot.channel.send(f"<@!{player.uid}>", embed=em)
@@ -161,14 +159,6 @@ class User(commands.Cog):
         await ctx.response.send_message(embed=embed)
         player.tokens -= amount
         await player.update(_columns=["tokens"])
-
-    @app_commands.command()
-    async def info(self, interaction: discord.Interaction):
-        """Displays basic bot information"""
-        await interaction.response.send_message(
-            cfg.GAME_INFO,
-            ephemeral=True,
-        )
 
 
 async def setup(bot):

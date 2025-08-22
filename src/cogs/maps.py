@@ -9,6 +9,7 @@ from discord.ext import commands
 
 import utils.config as cfg
 from bot import AutoBot
+from utils import strings as s
 from utils.db import Player
 
 
@@ -33,14 +34,12 @@ class Maps(commands.Cog):
             if player.name and opp.name in self.previous_bump:
                 return
             embed = discord.Embed(color=discord.Color(cfg.COLOR_COMBAT))
-            embed.title = (
-                ":crossed_swords: Two adventures encounter each other in the realm!"
-            )
+            embed.title = s.MAP_TITLE
             if random.random() <= 0.25 and player.level >= 25:
                 challenge = self.bot.get_cog("Challenge")
                 cstring = await challenge.challenge_opp(player, opp)
             else:
-                cstring = f"{player.name} and {opp.name} honorably bow to each other and pass, continuing on their journey peacefully."
+                cstring = s.MAP_PASSIVE % (player.name, opp.name)
             self.previous_bump = [player.name, opp.name]
             embed.add_field(name="", value=cstring)
             pings = []
