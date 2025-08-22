@@ -8,6 +8,7 @@ import discord
 from discord.ext import commands
 
 import utils.config as cfg
+import utils.strings as s
 from bot import AutoBot
 from utils.db import Player
 from utils.loot import get_item
@@ -37,8 +38,12 @@ class Events(commands.Cog):
             em.title = f":zap: {player.name} {event}!"
             em.add_field(
                 name="",
-                value=f"This wonderous event has boosted them **{self.bot.ctime(val)}** towards level **{player.level + 1}**.\n"
-                f"They now reach the next level in **{self.bot.ctime(player.nextxp - player.currentxp)}**",
+                value=s.NEW_EVENT
+                % (
+                    self.bot.ctime(val),
+                    player.level + 1,
+                    self.bot.ctime(player.nextxp - player.currentxp),
+                ),
             )
         elif event_choice[0] == "bevent":  # Bad
             player.nextxp += val
@@ -47,8 +52,12 @@ class Events(commands.Cog):
             em.title = f":zap: {player.name} {event}!"
             em.add_field(
                 name="",
-                value=f"This unfortunate event has slowed them **{self.bot.ctime(val)}** towards level **{player.level + 1}**.\n"
-                f"They now reach the next level in **{self.bot.ctime(player.nextxp - player.currentxp)}**",
+                value=s.BAD_EVENT
+                % (
+                    self.bot.ctime(val),
+                    player.level + 1,
+                    self.bot.ctime(player.nextxp - player.currentxp),
+                ),
             )
         elif event_choice[0] == "hog":  # Lucky
             val = int(int(10 + random.randint(1, 8)) / alvar * player.nextxp)
@@ -60,28 +69,28 @@ class Events(commands.Cog):
             )
             em.add_field(
                 name="",
-                value=f"This very rare event has boosted them **{self.bot.ctime(val)}** towards level **{player.level + 1}**.\n"
-                f"They now reach the next level in **{self.bot.ctime(player.nextxp - player.currentxp)}**",
+                value=s.HOG_EVENT
+                % (
+                    self.bot.ctime(val),
+                    player.level + 1,
+                    self.bot.ctime(player.nextxp - player.currentxp),
+                ),
             )
         else:
             print("Something went wrong choosing a random event")
         item = await get_item(player)
         em.add_field(
-            name=f"{player.name} also found some new loot!",
+            name=s.NEW_LOOT % player.name,
             value=self.bot.item_string(item[0]),
             inline=False,
         )
-        footer = (
-            f"This {item[1]} is stronger, so they equipped the new one!"
-            if item[2]
-            else f"This {item[1]} is weaker, so they tossed it away."
-        )
+        footer = s.UPGRADE % item[1] if item[2] else s.NO_UPGRADE % item[1]
         em.set_footer(text=footer)
         if self.bot.channel:
             if player.optin:
-                await self.bot.channel.send(f"<@!{player.uid}>", embed=em)  # type: ignore
+                await self.bot.channel.send(f"<@!{player.uid}>", embed=em)
             else:
-                await self.bot.channel.send(embed=em)  # type: ignore
+                await self.bot.channel.send(embed=em)
 
 
 async def setup(bot):

@@ -2,21 +2,21 @@
 config.py
 """
 
-#
+#########################################################################
 #   REQUIRED CONFIGURATIONS
-#
+#########################################################################
+# The unique Discord token
+DISCORD_TOKEN = "TOKEN_HERE"
 # Game name
 GAME_NAME = "AutoRPG"
 # Game version
 VERSION = "3.5.0"
 # Game info - displayed when a player uses /info. Uses Discord markdown formatting
-GAME_INFO = f"```AutoRPG (v{VERSION}) - by steev | https://autorpg.deadnet.org/```"
-# Game website URL - also used in a player's profile link. WARNING: Do not use a trailing slash!
+GAME_INFO = f"```{GAME_NAME} (v{VERSION}) - by steev | https://deadnet.org/```"
+# Game website URL - also used in a player's profile link. NOTICE: Do not use a trailing slash!
 GAME_URL = "https://autorpg.deadnet.org"
 # Guild ID, grabbed from Discord
 GUILD_ID = 0
-# The unique Discord token
-DISCORD_TOKEN = "TOKEN_HERE"
 # Discord application ID, grabbed from Discord
 APPLICATION_ID = 0
 # List of discord user ID's separated by a comma who have access to admin commands
@@ -35,15 +35,16 @@ DBHOST = "localhost"
 DBPORT = 3306
 DBNAME = "autorpg"
 
-#
+#########################################################################
 #   OPTIONAL CONFIGURATIONS
-#
+#########################################################################
 # Debug switch, changes the database to a fallback mode
 DEBUG = False
 # The interval in which the game loops (in seconds)
 INTERVAL = 5
 # The base time to level in seconds, 600 seconds = 10 minutes (base * (exp ** current level))
 TIME_BASE = 600
+
 # Exponential rewards and penalties are strange percentages relevant to 100%
 # For example a quest_reward is 0.90 meaning 10%, while a quest_penalty is 1.05 meaning 5%
 # The exponential increase in time to next level when someone levels up (base * (exp ** curent level))
@@ -71,10 +72,13 @@ WEAPON_SLOTS = [
 ]
 # Time in seconds that a player needs to idle to get a loot token
 TOKEN_TIME = 43200  # 12 hours
+
+# TODO: Simplify this mess
 # Current holiday, this changes the file that is loaded for events and bosses
-# HOLIDAY_LIST is a list of the names of the holidays. This also tells the bot what folder the events are in
+# HOLIDAY is current index of HOLIDAY_LIST which is list of the names of the holidays.
+# This also tells the bot what folder the events are in
 # For example, if Christmas is selected, it reads ./txtfiles/christmas/
-# This is for when you want to make custom holidays - just make sure the folder names match what's in the list
+# When you want to make custom holidays - just make sure the folder names match what's in the list
 # 0 = Normal / no holiday
 # 1 = Christmas
 # 2 = Halloween
@@ -92,15 +96,15 @@ COLOR_MONSTER = 0x000000
 COLOR_QUEST = 0x49AA2C
 COLOR_LOOT = 0xA000FF
 
-# Tips
-TIPS = [
-    "After level 10, you can change your class using /setjob! It is purely cosmetic and can be anything, but may be renamed if deemed offensive.",
-    "Want to get alerted when an event happens to you? Use /alert to enable it (or disable it!)",
-    "Good aligned players get a 10% boost to equipment and good events!",
-    "Good aligned players have a chance to **Smite**, doubling their chance of victory in monster encounters!",
-    # "Evil aligned players get a 10% penalty to equipment but have the chance to steal from others on victories!",
-    "Evil aligned players have a chance to **Backstab**, doubling their chance of victory in duels!",
-    "You can change your alignment and class at any time!",
-    "Item rarity affect the power of that item, and makes you stronger (or weaker) in duels!",
-    "While you may have a shiny Legendary weapon, it will eventually be replaced. New item drops scale with your own level!",
-]
+# Application emojis
+# Emojis used in /profile are pulled from Discord so you don't need to have them in your server
+# However, if you want to use custom emojis, replace the names and IDs with your own.
+E_WEAPON = "<:weapon:1390359056836989040>"
+E_SHIELD = "<:shield:1390358010744012870>"
+E_HELMET = "<:helm:1390357866371616828>"
+E_CHEST = "<:chest:1390357529296633877>"
+E_GLOVES = "<:gloves:1390357819097878600>"
+E_BOOTS = "<:boots:1390357641653653627>"
+E_RING = "<:ring:1390357474543931502>"
+E_AMULET = "<:amulet:1390357952539660418>"
+E_UPGRADE = "<:upgrade:1408143066426118234>"
