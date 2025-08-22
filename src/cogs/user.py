@@ -35,14 +35,6 @@ class User(commands.Cog):
         em.add_field(
             name="Next Level", value=self.bot.ctime(player.nextxp), inline=True
         )
-        item = await get_item(player)
-        em.add_field(
-            name=s.NEW_LOOT % player.name,
-            value=self.bot.item_string(item[0]),
-            inline=False,
-        )
-        footer = s.UPGRADE % item[1] if item[2] else s.NO_UPGRADE % item[1]
-        em.set_footer(text=footer)
         if cfg.ENABLE_COMBAT and player.level >= cfg.MIN_CHALLENGE_LEVEL:
             eligible = await Player.objects.exclude(uid=player.uid).all(
                 level__gte=cfg.MIN_CHALLENGE_LEVEL, online=True
@@ -51,6 +43,15 @@ class User(commands.Cog):
                 challenge = self.bot.get_cog("Challenge")
                 cstring = await challenge.challenge_opp(player, random.choice(eligible))
                 em.add_field(name=s.CHALLENGE_TITLE, value=cstring, inline=False)
+
+        item = await get_item(player)
+        item_embed = discord.Embed(color=discord.Color(cfg.COLOR_LOOT))
+        item_embed.title = s.NEW_LOOT % player.name
+        item_embed.add_field(name="", value=self.bot.item_string(item[0]), inline=False)
+        item_embed.set_footer(
+            text=s.UPGRADE % item[1] if item[2] else s.NO_UPGRADE % item[1]
+        )
+
         if self.bot.channel:
             if player.optin:
                 await self.bot.channel.send(f"<@!{player.uid}>", embed=em)

@@ -76,19 +76,21 @@ class Events(commands.Cog):
             )
         else:
             print("Something went wrong choosing a random event")
+
         item = await get_item(player)
-        em.add_field(
-            name=s.NEW_LOOT % player.name,
-            value=self.bot.item_string(item[0]),
-            inline=False,
+        item_embed = discord.Embed(color=discord.Color(cfg.COLOR_LOOT))
+        item_embed.title = s.NEW_LOOT % player.name
+        item_embed.add_field(name="", value=self.bot.item_string(item[0]), inline=False)
+        item_embed.set_footer(
+            text=s.UPGRADE % item[1] if item[2] else s.NO_UPGRADE % item[1]
         )
-        footer = s.UPGRADE % item[1] if item[2] else s.NO_UPGRADE % item[1]
-        em.set_footer(text=footer)
         if self.bot.channel:
             if player.optin:
-                await self.bot.channel.send(f"<@!{player.uid}>", embed=em)
+                await self.bot.channel.send(
+                    f"<@!{player.uid}>", embeds=[em, item_embed]
+                )
             else:
-                await self.bot.channel.send(embed=em)
+                await self.bot.channel.send(embeds=[em, item_embed])
 
 
 async def setup(bot):
