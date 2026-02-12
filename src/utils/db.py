@@ -14,16 +14,11 @@ from utils.config import DBHOST, DBNAME, DBPASS, DBPORT, DBTYPE, DBUSER, DEBUG
 DBSTRING = f"{DBTYPE}://{DBUSER}:{DBPASS}@{DBHOST}:{DBPORT}/{DBNAME}"
 
 metadata = sqlalchemy.MetaData()
-database = (
-    databases.Database(DBSTRING, force_rollback=True)
-    if DEBUG
-    else databases.Database(DBSTRING)
-)
+database = DatabaseConnection(DBSTRING)
 engine = sqlalchemy.create_engine(DBSTRING)
 basemeta = ormar.OrmarConfig(
     database=database,
     metadata=metadata,
-    engine=engine,
 )
 
 
